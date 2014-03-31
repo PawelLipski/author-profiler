@@ -101,7 +101,7 @@ class CWCorpusProcessor(CorpusProcessor):
 		get_minus_ig = lambda (word, ig): -ig
 		infogains.sort(key=get_minus_ig)
 
-		print infogains[:self.HIGHEST_INFOGAINS_TAKEN]
+		print infogains
 
 		words_highest_ig = [word for (word, ig) in infogains[:self.HIGHEST_INFOGAINS_TAKEN]]
 		return words_highest_ig
@@ -116,6 +116,7 @@ class CWCorpusProcessor(CorpusProcessor):
 
 		log2_or_zero = lambda x: log(x, 2) if x else 0.0
 
+		# computed according to http://www.cise.ufl.edu/~ddd/cap6635/Fall-97/Short-papers/2.htm
 		total_containing = freq_entry.get_total_containing()
 		male_containing = freq_entry.male_containing
 		female_containing = freq_entry.female_containing
@@ -133,13 +134,14 @@ class CWCorpusProcessor(CorpusProcessor):
 		entropy_word_present = m * log2_or_zero(m) + f * log2_or_zero(f)
 		entropy_word_absent = nm * log2_or_zero(nm) + nf * log2_or_zero(nf)
 
-		p_c = total_containing / self.get_total_number()
-		p_nc = total_not_containing / self.get_total_number()
+		# use div_or_zero in the case corpus is empty (self.total_number() == 0)
+		prop_contains = self.div_or_zero(total_containing, self.get_total_number())
+		prop_not_contains = self.div_or_zero(total_not_containing, self.get_total_number())
 
 		# it's not really the infogain,
 		# since the formula also incorporates the part for entropy H(S) -
 		# this can be safely skipped, however
-		ig = - p_c * entropy_word_present - p_nc * entropy_word_absent
+		ig = - prop_contains * entropy_word_present - prop_not_contains * entropy_word_absent
 		return ig
 
 

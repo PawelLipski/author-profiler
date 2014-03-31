@@ -2,6 +2,17 @@
 from processors import *
 from cw import *
 
+
+def record_article_into_all_processors(article, procs):
+
+	for w in article.split(' '):
+		for proc in procs:
+			proc.record_word(w)
+		for c in w:
+			for proc in procs:
+				proc.record_char(c)
+
+
 def compute_corpus_wide_stats(articles, corp_procs):
 
 	for (article, classification) in articles:
@@ -9,12 +20,7 @@ def compute_corpus_wide_stats(articles, corp_procs):
 		for corp_proc in corp_procs:
 			corp_proc.switch_article(classification)
 
-		for w in article.split(' '):
-			for corp_proc in corp_procs:
-				corp_proc.record_word(w)
-			for c in w:
-				for corp_proc in corp_procs:
-					corp_proc.record_char(c)
+		record_article_into_all_processors(article, corp_procs)
 
 
 def pass_stats_to_article_processors(procs):
@@ -29,12 +35,7 @@ def compute_feature_vectors_for_articles(articles, art_procs):
 
 	for (article, _) in articles:
 
-		for w in article.split(' '):
-			for art_proc in art_procs:
-				art_proc.record_word(w)
-			for c in w:
-				for art_proc in art_procs:
-					art_proc.record_char(c)
+		record_article_into_all_processors(article, art_procs)
 
 		for art_proc in art_procs:
 			v = art_proc.get_features()

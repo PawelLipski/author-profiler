@@ -46,8 +46,8 @@ def main():
 
 	procs = [ (CWCorpusProcessor(), CWArticleProcessor()) ]
 	contents = open("lorem.txt").read()
-	art1 = contents[:len(contents) // 2]
-	art2 = contents[len(contents) // 2:]
+	art1 = contents[:len(contents) / 2]
+	art2 = contents[len(contents) / 2:]
 	articles = [ (art1, Classification('M', 50)), (art2, Classification('F', 18)) ]
 	#articles = [ (contents, Classification('M', 50)) ]
 

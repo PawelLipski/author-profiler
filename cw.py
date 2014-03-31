@@ -17,7 +17,12 @@ class CWCorpusProcessor(CorpusProcessor):
 			self.freqs[w] = 1
 
 	def switch_article(self, classification):
-		pass
+		"""The classification is represented by a pair
+		of gender's first letter and age lower bound
+		('F' or 'M', 18 or 25 or 35 or 50)"""
+
+		gender, age = classification
+		self.is_current_by_male = gender == 'M'
 
 	def get_corpus_wide_stats(self):
 		"""Returns the list of 1k words with the highest IG

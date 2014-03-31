@@ -13,7 +13,7 @@ class WordFreqEntry:
 class CWCorpusProcessor(CorpusProcessor):
 
 	MOST_COMMON_TAKEN = 100
-	HIGHEST_INFOGAIN_TAKEN = 10
+	HIGHEST_INFOGAINS_TAKEN = 10
 
 	def __init__(self):
 		self.clsfn = None
@@ -48,8 +48,8 @@ class CWCorpusProcessor(CorpusProcessor):
 		as the param to set_corpus_wide_stats."""
 
 		words_most_common = self.get_most_common()
-		print words_most_common
 		words_highest_ig = self.get_highest_ig(words_most_common)
+		print words_highest_ig
 
 		return words_highest_ig
 
@@ -72,9 +72,11 @@ class CWCorpusProcessor(CorpusProcessor):
 			ig_w = self.get_infogain(w)
 			infogains.append((w, ig_w))
 
-		# TODO
-		return words_most_common[:self.HIGHEST_INFOGAIN_TAKEN]
+		get_minus_ig = lambda (w, ig_w): -ig_w
+		infogains.sort(key = get_minus_ig)
 
+		words_highest_ig = [ w for (w, ig_w) in infogains[:self.HIGHEST_INFOGAINS_TAKEN] ]
+		return words_highest_ig
 
 	def get_infogain(self, w):
 		# TODO

@@ -1,4 +1,5 @@
 
+from cw import *
 
 def compute_corpus_wide_stats(articles, corp_procs):
 
@@ -18,7 +19,7 @@ def compute_corpus_wide_stats(articles, corp_procs):
 def pass_stats_to_article_processors(procs):
 	for (corp_proc, art_proc) in procs:
 		stats = corp_proc.get_corpus_wide_stats()
-		art_proc.proc.set_corpus_wide_stats(stats)
+		art_proc.set_corpus_wide_stats(stats)
 
 
 def compute_feature_vectors_for_articles(articles, art_procs):
@@ -38,7 +39,7 @@ def compute_feature_vectors_for_articles(articles, art_procs):
 
 def main():
 
-	procs = []
+	procs = [ (CWCorpusProcessor(), CWArticleProcessor()) ]
 	articles = [ ("Lorem ipsum", 1), ("dolor sit amet", 2) ]
 
 	corp_procs = [corp_proc for (corp_proc, art_proc) in procs]

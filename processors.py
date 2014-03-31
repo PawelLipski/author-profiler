@@ -29,7 +29,7 @@ class CorpusProcessor(Processor):
 class ArticleProcessor(Processor):
 
 	def set_corpus_wide_stats(self, stats):
-		self.stats = stats
+		pass
 
 	def clean_up(self):
 		"""Used to clean up the stored state,

@@ -3,6 +3,9 @@ from processors import *
 
 class CWCorpusProcessor(CorpusProcessor):
 
+	MOST_COMMON_TAKEN = 100
+	HIGHEST_INFOGAIN_TAKEN = 10
+
 	def __init__(self):
 		self.freqs = {}
 
@@ -22,26 +25,31 @@ class CWCorpusProcessor(CorpusProcessor):
 		The corresponding ArticleProcessor must accept such a list of 1k words
 		as the param to set_corpus_wide_stats."""
 
-		words_10k = self.get_10k_most_common()
-		words_1k_ig = self.get_1k_highest_ig(words_10k)
+		words_most_common = self.get_most_common()
+		print words_most_common
+		words_highest_ig = self.get_highest_ig(words_most_common)
 
-		return words_1k_ig
+		return words_highest_ig
 
-	def get_10k_most_common(self):
+	def get_most_common(self):
 
-		# TODO
-		return []
+		get_minus_freq = lambda (word, freq): -freq
 
-	def get_1k_highest_ig(self, words_10k):
+		word_freq_list = self.freqs.items()
+		sorted_by_freq_desc = sorted(word_freq_list, key = get_minus_freq)
+
+		return sorted_by_freq_desc[:self.MOST_COMMON_TAKEN]
+
+	def get_highest_ig(self, words_most_common):
 
 		infogains = []
 
-		for w in words_10k:
+		for w in words_most_common:
 			ig_w = self.get_infogain(w)
 			infogains.append((w, ig_w))
 
 		# TODO
-		return []
+		return words_most_common[:self.HIGHEST_INFOGAIN_TAKEN]
 
 	def get_infogain(self, w):
 		# TODO

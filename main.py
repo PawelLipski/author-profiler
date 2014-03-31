@@ -40,7 +40,7 @@ def compute_feature_vectors_for_articles(articles, art_procs):
 def main():
 
 	procs = [ (CWCorpusProcessor(), CWArticleProcessor()) ]
-	articles = [ ("Lorem ipsum", 1), ("dolor sit amet", 2) ]
+	articles = [ (open("lorem.txt").read(), 1) ]
 
 	corp_procs = [corp_proc for (corp_proc, art_proc) in procs]
 	compute_corpus_wide_stats(articles, corp_procs)

@@ -1,4 +1,5 @@
 
+from processors import *
 from cw import *
 
 def compute_corpus_wide_stats(articles, corp_procs):
@@ -17,12 +18,15 @@ def compute_corpus_wide_stats(articles, corp_procs):
 
 
 def pass_stats_to_article_processors(procs):
+
 	for (corp_proc, art_proc) in procs:
+
 		stats = corp_proc.get_corpus_wide_stats()
 		art_proc.set_corpus_wide_stats(stats)
 
 
 def compute_feature_vectors_for_articles(articles, art_procs):
+
 	for (article, _) in articles:
 
 		for w in article.split(' '):
@@ -40,7 +44,7 @@ def compute_feature_vectors_for_articles(articles, art_procs):
 def main():
 
 	procs = [ (CWCorpusProcessor(), CWArticleProcessor()) ]
-	articles = [ (open("lorem.txt").read(), ('M', 50)) ]
+	articles = [ (open("lorem.txt").read(), Classification('M', 50)) ]
 
 	corp_procs = [corp_proc for (corp_proc, art_proc) in procs]
 	compute_corpus_wide_stats(articles, corp_procs)

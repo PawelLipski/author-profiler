@@ -1,4 +1,11 @@
 
+class Classification:
+
+	def __init__(self, gender, age):
+		self.gender = gender
+		self.age = age
+
+
 class Processor:
 	""" Typically, only one of the methods record_char and record_word
 	 will be non-empty, but both will be called on the corresponding events

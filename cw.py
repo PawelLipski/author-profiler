@@ -1,28 +1,45 @@
 
 from processors import *
 
+class WordFreqEntry:
+
+	def __init__(self):
+		self.male_containing = 0
+		self.female_containing = 0
+
+	def get_total_containing(self):
+		return self.female_containing + self.male_containing
+
 class CWCorpusProcessor(CorpusProcessor):
 
 	MOST_COMMON_TAKEN = 100
 	HIGHEST_INFOGAIN_TAKEN = 10
 
 	def __init__(self):
+		self.clsfn = None
 		self.freqs = {}
 
-	def record_word(self, w):
 
-		if w in self.freqs:
-			self.freqs[w] += 1
-		else:
-			self.freqs[w] = 1
-
-	def switch_article(self, classification):
+	def switch_article(self, clsfn):
 		"""The classification is represented by a pair
 		of gender's first letter and age lower bound
 		('F' or 'M', 18 or 25 or 35 or 50)"""
 
-		gender, age = classification
-		self.is_current_by_male = gender == 'M'
+		self.clsfn = clsfn
+
+
+	def record_word(self, w):
+
+		freq_entry = self.freqs.get(w)
+
+		if not freq_entry:
+			freq_entry = self.freqs[w] = WordFreqEntry()
+
+		if self.clsfn.gender == 'M':
+			freq_entry.male_containing += 1
+		else:
+			freq_entry.female_containing += 1
+
 
 	def get_corpus_wide_stats(self):
 		"""Returns the list of 1k words with the highest IG
@@ -36,14 +53,16 @@ class CWCorpusProcessor(CorpusProcessor):
 
 		return words_highest_ig
 
+
 	def get_most_common(self):
 
-		get_minus_freq = lambda (word, freq): -freq
+		get_minus_freq = lambda (word, freq): -freq.get_total_containing()
 
 		word_freq_list = self.freqs.items()
 		sorted_by_freq_desc = sorted(word_freq_list, key = get_minus_freq)
 
 		return sorted_by_freq_desc[:self.MOST_COMMON_TAKEN]
+
 
 	def get_highest_ig(self, words_most_common):
 
@@ -55,6 +74,7 @@ class CWCorpusProcessor(CorpusProcessor):
 
 		# TODO
 		return words_most_common[:self.HIGHEST_INFOGAIN_TAKEN]
+
 
 	def get_infogain(self, w):
 		# TODO

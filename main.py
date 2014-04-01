@@ -56,7 +56,10 @@ def compute_feature_vectors_for_articles(articles, art_procs):
 
 def main():
 
-	procs = [ (CWCorpusProcessor(), CWArticleProcessor()) ]
+	procs = [
+		(CWCorpusProcessor(), CWArticleProcessor()),
+		(CNGCorpusProcessor(), CNGArticleProcessor())
+	]
 	articles = prepare_test_articles()
 
 	corp_procs = [corp_proc for (corp_proc, art_proc) in procs]

@@ -176,3 +176,37 @@ class CWArticleProcessor(RelevantWordsArticleProcessor):
 	def record_word(self, word):
 		self.record_item(word)
 
+
+class CNGCorpusProcessor(HighestIGCorpusProcessor):
+
+	def __init__(self):
+
+		HighestIGCorpusProcessor.__init__(self)
+
+		self.trigram = ''
+
+	def record_char(self, char):
+
+		self.trigram += char
+
+		if len(self.trigram) == 3:
+			self.record_item(self.trigram)
+			self.trigram = self.trigram[1:]
+
+
+class CNGArticleProcessor(RelevantWordsArticleProcessor):
+
+	def __init__(self):
+		self.trigram = ''
+
+	def record_char(self, char):
+
+		self.trigram += char
+
+		if len(self.trigram) == 3:
+			self.record_item(self.trigram)
+			self.trigram = self.trigram[1:]
+
+	def clean_up(self):
+		RelevantWordsArticleProcessor.clean_up(self)
+		self.trigram = ''

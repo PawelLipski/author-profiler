@@ -2,15 +2,6 @@
 from processors import *
 from math import log
 
-class WordFreqEntry:
-	def __init__(self):
-		self.male_containing = 0
-		self.female_containing = 0
-
-	def get_total_containing(self):
-		return self.female_containing + self.male_containing
-
-
 class CWCorpusProcessor(CorpusProcessor):
 
 	MOST_COMMON_TAKEN = 100
@@ -19,51 +10,54 @@ class CWCorpusProcessor(CorpusProcessor):
 
 	def __init__(self):
 
-		self.clsfn = None
-		self.word_set = set()
+		self.currect_art_category = 0
+		self.current_art_word_set = set()
 
-		self.freqs = {}
-
-		self.male_number = 0
-		self.female_number = 0
-
-
-	def get_total_number(self):
-		return self.male_number + self.female_number
+		self.freq_entries_by_word = {}
+		self.freqs_by_category = self.new_freq_entry()
 
 
 	def switch_article(self, clsfn):
-		"""The classification is represented by a pair
-		of gender's first letter and age lower bound
-		('F' or 'M', 18 or 25 or 35 or 50)"""
+		"""The classification is represented by a Classification object"""
 
-		self.clsfn = clsfn
-		if clsfn.gender == 'M':
-			self.male_number += 1
-		else:
-			self.female_number += 1
+		self.currect_art_category = clsfn.get_category_number()
+		self.current_art_word_set = set()
 
-		self.word_set = set()
+		self.freqs_by_category[self.currect_art_category] += 1
+
 
 	def first_occurred_in_current_article(self, w):
 
-		return w not in self.word_set
+		return w not in self.current_art_word_set
+
+	def new_freq_entry(self):
+
+		return [0] * Classification.NUMBER_OF_CATEGORIES
+
+	def freq_entry_total(self, freq_entry):
+
+		return sum(freq_entry)
+
+	def freq_entry_female(self, freq_entry):
+
+		return sum(freq_entry[:4])
+
+	def freq_entry_male(self, freq_entry):
+
+		return sum(freq_entry[4:])
 
 	def record_word(self, w):
 
 		if self.first_occurred_in_current_article(w):
 
-			self.word_set.add(w)
+			self.current_art_word_set.add(w)
 
-			freq_entry = self.freqs.get(w)
+			freq_entry = self.freq_entries_by_word.get(w)
 
 			if not freq_entry:
-				freq_entry = self.freqs[w] = WordFreqEntry()
+				freq_entry = self.freq_entries_by_word[w] = self.new_freq_entry()
 
-			if self.clsfn.gender == 'M':
-				freq_entry.male_containing += 1
-			else:
-				freq_entry.female_containing += 1
+			freq_entry[self.currect_art_category] += 1
 
 
 	def get_corpus_wide_stats(self):
@@ -81,9 +75,10 @@ class CWCorpusProcessor(CorpusProcessor):
 
 	def get_most_common(self):
 
-		get_minus_freq = lambda (word, freq): -freq.get_total_containing()
+		# just not to miss the minus
+		get_minus_freq = lambda (word, freq_entry): ((((-1)))) * self.freq_entry_total(freq_entry)
 
-		word_freq_list = self.freqs.items()
+		word_freq_list = self.freq_entries_by_word.items()
 		sorted_by_freq_desc = sorted(word_freq_list, key=get_minus_freq)
 
 		return sorted_by_freq_desc[:self.MOST_COMMON_TAKEN]
@@ -94,7 +89,7 @@ class CWCorpusProcessor(CorpusProcessor):
 		infogains = []
 
 		for (word, freq_entry) in words_most_common:
-			print word, freq_entry.male_containing, freq_entry.female_containing
+			print word, self.freq_entry_female(freq_entry), self.freq_entry_male(freq_entry)
 			ig = self.get_infogain(freq_entry)
 			infogains.append((word, ig))
 
@@ -106,37 +101,36 @@ class CWCorpusProcessor(CorpusProcessor):
 		words_highest_ig = [word for (word, ig) in infogains[:self.HIGHEST_INFOGAINS_TAKEN]]
 		return words_highest_ig
 
-	def div_or_zero(self, part, total):
-		if total == 0:
-			return 0.0
-		else:
-			return float(part) / total
-
 	def get_infogain(self, freq_entry):
 
 		log2_or_zero = lambda x: log(x, 2) if x else 0.0
+		div_or_zero = lambda m, n: (float(m) / n) if n else 0.0
 
 		# computed according to http://www.cise.ufl.edu/~ddd/cap6635/Fall-97/Short-papers/2.htm
-		total_containing = freq_entry.get_total_containing()
-		male_containing = freq_entry.male_containing
-		female_containing = freq_entry.female_containing
-		m = self.div_or_zero(male_containing, total_containing)
-		f = self.div_or_zero(female_containing, total_containing)
-		print total_containing, male_containing, female_containing, m, f
+		total_containing = self.freq_entry_total(freq_entry)
+		female_containing = self.freq_entry_female(freq_entry)
+		male_containing = self.freq_entry_male(freq_entry)
+		f = div_or_zero(female_containing, total_containing)
+		m = div_or_zero(male_containing, total_containing)
+		print total_containing, female_containing, male_containing, f, m
 
-		total_not_containing = self.get_total_number() - total_containing
-		male_not_containing = self.male_number - male_containing
-		female_not_containing = self.female_number - female_containing
-		nm = self.div_or_zero(male_not_containing, total_not_containing)
-		nf = self.div_or_zero(female_not_containing, total_not_containing)
-		print total_not_containing, male_not_containing, female_not_containing, nm, nf
+		total = self.freq_entry_total(self.freqs_by_category)
+		total_female = self.freq_entry_female(self.freqs_by_category)
+		total_male = self.freq_entry_male(self.freqs_by_category)
+
+		total_not_containing = total - total_containing
+		female_not_containing = total_female - female_containing
+		male_not_containing = total_male - male_containing
+		nf = div_or_zero(female_not_containing, total_not_containing)
+		nm = div_or_zero(male_not_containing, total_not_containing)
+		print total_not_containing, female_not_containing, male_not_containing, nf, nm
 
 		entropy_word_present = - m * log2_or_zero(m) - f * log2_or_zero(f)
 		entropy_word_absent = - nm * log2_or_zero(nm) - nf * log2_or_zero(nf)
 
 		# use div_or_zero in the case corpus is empty (self.total_number() == 0)
-		prop_word_present = self.div_or_zero(total_containing, self.get_total_number())
-		prop_word_absent = self.div_or_zero(total_not_containing, self.get_total_number())
+		prop_word_present = div_or_zero(total_containing, total)
+		prop_word_absent = div_or_zero(total_not_containing, total)
 
 		# it's not really the infogain,
 		# since the formula also incorporates the part for entropy H(S) -

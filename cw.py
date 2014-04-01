@@ -135,13 +135,13 @@ class CWCorpusProcessor(CorpusProcessor):
 		entropy_word_absent = - nm * log2_or_zero(nm) - nf * log2_or_zero(nf)
 
 		# use div_or_zero in the case corpus is empty (self.total_number() == 0)
-		prop_contains = self.div_or_zero(total_containing, self.get_total_number())
-		prop_not_contains = self.div_or_zero(total_not_containing, self.get_total_number())
+		prop_word_present = self.div_or_zero(total_containing, self.get_total_number())
+		prop_word_absent = self.div_or_zero(total_not_containing, self.get_total_number())
 
 		# it's not really the infogain,
 		# since the formula also incorporates the part for entropy H(S) -
 		# this can be safely skipped, however
-		ig = - prop_contains * entropy_word_present - prop_not_contains * entropy_word_absent
+		ig = - prop_word_present * entropy_word_present - prop_word_absent * entropy_word_absent
 		return ig
 
 

@@ -146,7 +146,7 @@ class RelevantWordsArticleProcessor(ArticleProcessor):
 	def record_item(self, word):
 
 		no = self.relevant_words_dict.get(word)
-		if no:
+		if not (no is None):
 			self.word_counts[no] += 1
 
 	def get_features(self):

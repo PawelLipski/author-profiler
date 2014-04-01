@@ -25,6 +25,9 @@ def record_article_into_all_processors(article, procs):
 			for proc in procs:
 				proc.record_char(c)
 
+def get_class_short_name(obj):
+	return str(obj.__class__).split('.')[-1]
+
 
 def compute_corpus_wide_stats(articles, corp_procs):
 
@@ -40,18 +43,20 @@ def pass_stats_to_article_processors(procs):
 
 	for (corp_proc, art_proc) in procs:
 
+		print get_class_short_name(corp_proc), '- corpus-wide stats:',
 		stats = corp_proc.get_corpus_wide_stats()
 		art_proc.set_corpus_wide_stats(stats)
 
 
 def compute_feature_vectors_for_articles(articles, art_procs):
 
-	for (article, _) in articles:
+	for (article, clsfn) in articles:
 
+		print 'Article:', clsfn.gender, clsfn.age
 		record_article_into_all_processors(article, art_procs)
 
 		for art_proc in art_procs:
-			print art_proc.get_features()
+			print get_class_short_name(art_proc), '- article-wide stats:', art_proc.get_features()
 			art_proc.clean_up()
 
 def main():

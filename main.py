@@ -1,5 +1,5 @@
 
-from processors import *
+from classification import *
 from cwcng import *
 
 def prepare_test_articles():

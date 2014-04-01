@@ -3,8 +3,8 @@ from processors import *
 from cw import *
 
 def prepare_test_articles():
-	contents = open("lorem.txt").read()
-	n = 8
+	contents = open("1984.txt").read()
+	n = 50
 	chunk_len = len(contents) / n
 	arts = [0] * n
 	for i in range(0,n-1):
@@ -13,14 +13,14 @@ def prepare_test_articles():
 
 	articles = []
 	for i in range(0,n):
-		articles.append((arts[i], Classification('M' if i in [2,3,4,5] else 'F', [18, 25, 35, 50][i % 4])))
+		articles.append((arts[i], Classification('M' if i <= n/2 else 'F', [18, 25, 35, 50][i % 4])))
 	return articles
 
 def record_article_into_all_processors(article, procs):
 
 	for w in article.split(' '):
 		for proc in procs:
-			proc.record_word(w)
+			proc.record_word(w.lower())
 		for c in w:
 			for proc in procs:
 				proc.record_char(c)

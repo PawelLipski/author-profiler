@@ -4,8 +4,8 @@ from math import log
 
 class CWCorpusProcessor(CorpusProcessor):
 
-	MOST_COMMON_TAKEN = 1000
-	HIGHEST_INFOGAINS_TAKEN = 10
+	MOST_COMMON_TAKEN = 10000
+	HIGHEST_INFOGAINS_TAKEN = 1000
 
 
 	def __init__(self):

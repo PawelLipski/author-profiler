@@ -14,7 +14,7 @@ class Classification:
 		return self.CATEGORY_FOR_GENDER[self.gender] + self.CATEGORY_FOR_AGE[self.age]
 
 
-class Processor:
+class BasicTextProcessor:
 	""" Typically, only one of the methods record_char and record_word
 	 will be non-empty, but both will be called on the corresponding events
 	 (on char collected/on word complete)"""
@@ -28,7 +28,7 @@ class Processor:
 		pass
 
 
-class CorpusProcessor(Processor):
+class CorpusProcessor(BasicTextProcessor):
 
 	def switch_article(self, classification):
 		"""Start collecting data for the new article
@@ -41,7 +41,7 @@ class CorpusProcessor(Processor):
 		pass
 
 
-class ArticleProcessor(Processor):
+class ArticleProcessor(BasicTextProcessor):
 
 	def set_corpus_wide_stats(self, stats):
 		pass

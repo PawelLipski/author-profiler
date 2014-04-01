@@ -2,7 +2,7 @@
 from processors import *
 from math import log
 
-class CWCorpusProcessor(CorpusProcessor):
+class HighestIGCorpusProcessor(CorpusProcessor):
 
 	MOST_COMMON_TAKEN = 10000
 	HIGHEST_INFOGAINS_TAKEN = 1000
@@ -37,7 +37,7 @@ class CWCorpusProcessor(CorpusProcessor):
 
 
 
-	def record_word(self, w):
+	def record_item(self, w):
 
 		if self.first_occurred_in_current_art(w):
 
@@ -131,7 +131,8 @@ class CWCorpusProcessor(CorpusProcessor):
 
 
 
-class CWArticleProcessor(ArticleProcessor):
+class RelevantWordsArticleProcessor(ArticleProcessor):
+
 	def set_corpus_wide_stats(self, relevant_words):
 		"""Assumes stats is a list of 1k strings."""
 
@@ -143,7 +144,7 @@ class CWArticleProcessor(ArticleProcessor):
 
 		self.set_up_new_word_counts()
 
-	def record_word(self, word):
+	def record_item(self, word):
 
 		no = self.relevant_words_dict.get(word)
 		if no:
@@ -157,7 +158,20 @@ class CWArticleProcessor(ArticleProcessor):
 
 		self.set_up_new_word_counts()
 
-
 	def set_up_new_word_counts(self):
 
 		self.word_counts = [0] * self.word_number
+
+
+
+class CWCorpusProcessor(HighestIGCorpusProcessor):
+
+	def record_word(self, word):
+		self.record_item(word)
+
+
+class CWArticleProcessor(RelevantWordsArticleProcessor):
+
+	def record_word(self, word):
+		self.record_item(word)
+

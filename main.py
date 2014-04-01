@@ -1,6 +1,6 @@
 
 from processors import *
-from cw import *
+from cwcng import *
 
 def prepare_test_articles():
 	contents = open("1984.txt").read()

@@ -1,4 +1,4 @@
-
+from compiler.ast import Class
 from processors import *
 from math import log
 
@@ -14,7 +14,7 @@ class CWCorpusProcessor(CorpusProcessor):
 		self.current_art_word_set = set()
 
 		self.freq_entries_by_word = {}
-		self.freqs_by_category = self.new_freq_entry()
+		self.articles_in_category = self.new_freq_entry()
 
 
 	def switch_article(self, clsfn):
@@ -23,7 +23,7 @@ class CWCorpusProcessor(CorpusProcessor):
 		self.currect_art_category = clsfn.get_category_number()
 		self.current_art_word_set = set()
 
-		self.freqs_by_category[self.currect_art_category] += 1
+		self.articles_in_category[self.currect_art_category] += 1
 
 
 	def first_occurred_in_current_article(self, w):
@@ -101,7 +101,33 @@ class CWCorpusProcessor(CorpusProcessor):
 		words_highest_ig = [word for (word, ig) in infogains[:self.HIGHEST_INFOGAINS_TAKEN]]
 		return words_highest_ig
 
-	def get_infogain(self, freq_entry):
+	def get_infogain(self, articles_in_category_containing_the_word):
+
+		log2_or_zero = lambda x: log(x, 2) if x else 0.0
+		div_or_zero = lambda m, n: (float(m) / n) if n else 0.0
+
+		total = sum(self.articles_in_category)
+		total_containing = sum(articles_in_category_containing_the_word) # sum over categories
+		total_not_containing = total - total_containing
+
+		entropy_word_present = 0.0
+		for i in range(len(articles_in_category_containing_the_word)):
+			in_category_containing = articles_in_category_containing_the_word[i]
+			prop_containing_is_in_category = div_or_zero(in_category_containing, total_containing)
+			entropy_word_present += (((-1))) * prop_containing_is_in_category * log2_or_zero(prop_containing_is_in_category)
+		prop_word_present = div_or_zero(total_containing, total)
+
+		entropy_word_absent = 0.0
+		for i in range(len(articles_in_category_containing_the_word)):
+			in_category_not_containing = self.articles_in_category[i] - articles_in_category_containing_the_word[i]
+			prop_not_containing_is_in_category = div_or_zero(in_category_not_containing, total_not_containing)
+			entropy_word_absent += (((-1))) * prop_not_containing_is_in_category * log2_or_zero(prop_not_containing_is_in_category)
+		prop_word_absent = div_or_zero(total_not_containing, total)
+
+		ig = - prop_word_present * entropy_word_present - prop_word_absent * entropy_word_absent
+		return ig
+
+	def get_infogain_old(self, freq_entry):
 
 		log2_or_zero = lambda x: log(x, 2) if x else 0.0
 		div_or_zero = lambda m, n: (float(m) / n) if n else 0.0
@@ -114,9 +140,9 @@ class CWCorpusProcessor(CorpusProcessor):
 		m = div_or_zero(male_containing, total_containing)
 		print total_containing, female_containing, male_containing, f, m
 
-		total = self.freq_entry_total(self.freqs_by_category)
-		total_female = self.freq_entry_female(self.freqs_by_category)
-		total_male = self.freq_entry_male(self.freqs_by_category)
+		total = self.freq_entry_total(self.articles_in_category)
+		total_female = self.freq_entry_female(self.articles_in_category)
+		total_male = self.freq_entry_male(self.articles_in_category)
 
 		total_not_containing = total - total_containing
 		female_not_containing = total_female - female_containing

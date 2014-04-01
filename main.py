@@ -13,7 +13,7 @@ def prepare_test_articles():
 
 	articles = []
 	for i in range(0,n):
-		articles.append((arts[i], Classification('M' if i % 2 else 'F', [18, 25, 35, 50][i % 4])))
+		articles.append((arts[i], Classification('M' if i in [2,3,4,5] else 'F', [18, 25, 35, 50][i % 4])))
 	return articles
 
 def record_article_into_all_processors(article, procs):

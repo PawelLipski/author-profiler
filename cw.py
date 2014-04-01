@@ -114,6 +114,7 @@ class CWCorpusProcessor(CorpusProcessor):
 		for i in range(len(articles_in_category_containing_the_word)):
 			in_category_containing = articles_in_category_containing_the_word[i]
 			prop_containing_is_in_category = div_or_zero(in_category_containing, total_containing)
+			print in_category_containing, total_containing, '->', prop_containing_is_in_category
 			entropy_word_present += (((-1))) * prop_containing_is_in_category * log2_or_zero(prop_containing_is_in_category)
 		prop_word_present = div_or_zero(total_containing, total)
 
@@ -124,6 +125,7 @@ class CWCorpusProcessor(CorpusProcessor):
 			entropy_word_absent += (((-1))) * prop_not_containing_is_in_category * log2_or_zero(prop_not_containing_is_in_category)
 		prop_word_absent = div_or_zero(total_not_containing, total)
 
+		print prop_word_present, entropy_word_present, prop_word_absent, entropy_word_absent
 		ig = - prop_word_present * entropy_word_present - prop_word_absent * entropy_word_absent
 		return ig
 

@@ -51,7 +51,7 @@ def compute_feature_vectors_for_articles(articles, art_procs):
 		record_article_into_all_processors(article, art_procs)
 
 		for art_proc in art_procs:
-			v = art_proc.get_features()
+			print art_proc.get_features()
 			art_proc.clean_up()
 
 def main():

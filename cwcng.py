@@ -60,7 +60,6 @@ class HighestIGCorpusProcessor(CorpusProcessor):
 
 		words_most_common = self.get_most_common()
 		words_highest_ig = self.get_highest_ig(words_most_common)
-		print words_highest_ig
 
 		return words_highest_ig
 
@@ -82,13 +81,12 @@ class HighestIGCorpusProcessor(CorpusProcessor):
 		infogains = []
 
 		for (word, arts_by_categories_for_the_word) in words_most_common:
-			print word, arts_by_categories_for_the_word
+			#print word, arts_by_categories_for_the_word
 			ig = self.get_infogain(arts_by_categories_for_the_word)
 			infogains.append((word, ig))
 
 		get_minus_ig = lambda (word, ig): -ig
 		infogains.sort(key=get_minus_ig)
-
 		print infogains
 
 		words_highest_ig = [word for (word, ig) in infogains[:self.HIGHEST_INFOGAINS_TAKEN]]
@@ -124,8 +122,8 @@ class HighestIGCorpusProcessor(CorpusProcessor):
 		prop_art_doesnt_contain_the_word = div_or_zero(total_not_containing_the_word, total)
 
 
-		print prop_art_contains_the_word, entropy_in_arts_containing_the_word, \
-			prop_art_doesnt_contain_the_word, entropy_in_arts_not_containing_the_word
+		#print prop_art_contains_the_word, entropy_in_arts_containing_the_word, \
+		#	prop_art_doesnt_contain_the_word, entropy_in_arts_not_containing_the_word
 		ig = - prop_art_contains_the_word * entropy_in_arts_containing_the_word \
 			 - prop_art_doesnt_contain_the_word * entropy_in_arts_not_containing_the_word
 		return ig

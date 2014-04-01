@@ -1,4 +1,4 @@
-from compiler.ast import Class
+
 from processors import *
 from math import log
 
@@ -10,7 +10,7 @@ class CWCorpusProcessor(CorpusProcessor):
 
 	def __init__(self):
 
-		self.currect_art_category = 0
+		self.current_art_category = 0
 		self.current_art_word_set = set()
 
 		self.arts_by_categories_by_word = {}
@@ -20,10 +20,10 @@ class CWCorpusProcessor(CorpusProcessor):
 	def switch_article(self, clsfn):
 		"""The classification is represented by a Classification object"""
 
-		self.currect_art_category = clsfn.get_category_number()
+		self.current_art_category = clsfn.get_category_number()
 		self.current_art_word_set = set()
 
-		self.arts_by_category[self.currect_art_category] += 1
+		self.arts_by_category[self.current_art_category] += 1
 
 
 	def first_occurred_in_current_art(self, w):
@@ -48,7 +48,7 @@ class CWCorpusProcessor(CorpusProcessor):
 			if not arts_by_categories_for_the_word:
 				arts_by_categories_for_the_word = self.arts_by_categories_by_word[w] = self.new_arts_by_category_array()
 
-			arts_by_categories_for_the_word[self.currect_art_category] += 1
+			arts_by_categories_for_the_word[self.current_art_category] += 1
 
 
 	def get_corpus_wide_stats(self):

@@ -100,29 +100,33 @@ class CWCorpusProcessor(CorpusProcessor):
 		div_or_zero = lambda m, n: (float(m) / n) if n else 0.0
 
 		total = sum(self.arts_by_category)
-		total_containing = sum(arts_by_categories_for_the_word) # sum over categories
-		total_not_containing = total - total_containing
+		total_containing_the_word = sum(arts_by_categories_for_the_word) # sum over categories
+		total_not_containing_the_word = total - total_containing_the_word
 
-		entropy_word_present = 0.0
+		entropy_in_arts_containing_the_word = 0.0
 		for i in range(len(arts_by_categories_for_the_word)):
 			in_category_containing = arts_by_categories_for_the_word[i]
-			prop_containing_is_in_category = div_or_zero(in_category_containing, total_containing)
-			entropy_word_present += (((-1))) * prop_containing_is_in_category * log2_or_zero(prop_containing_is_in_category)
+			prop_containing_is_in_category = div_or_zero(in_category_containing, total_containing_the_word)
+			entropy_in_arts_containing_the_word += (((-1))) * prop_containing_is_in_category \
+												   * log2_or_zero(prop_containing_is_in_category)
 
-		prop_word_present = div_or_zero(total_containing, total)
+		prop_art_contains_the_word = div_or_zero(total_containing_the_word, total)
 
 
-		entropy_word_absent = 0.0
+		entropy_in_arts_not_containing_the_word = 0.0
 		for i in range(len(arts_by_categories_for_the_word)):
 			in_category_not_containing = self.arts_by_category[i] - arts_by_categories_for_the_word[i]
-			prop_not_containing_is_in_category = div_or_zero(in_category_not_containing, total_not_containing)
-			entropy_word_absent += (((-1))) * prop_not_containing_is_in_category * log2_or_zero(prop_not_containing_is_in_category)
+			prop_not_containing_is_in_category = div_or_zero(in_category_not_containing, total_not_containing_the_word)
+			entropy_in_arts_not_containing_the_word += (((-1))) * prop_not_containing_is_in_category \
+													   * log2_or_zero(prop_not_containing_is_in_category)
 
-		prop_word_absent = div_or_zero(total_not_containing, total)
+		prop_art_doesnt_contain_the_word = div_or_zero(total_not_containing_the_word, total)
 
 
-		print prop_word_present, entropy_word_present, prop_word_absent, entropy_word_absent
-		ig = - prop_word_present * entropy_word_present - prop_word_absent * entropy_word_absent
+		print prop_art_contains_the_word, entropy_in_arts_containing_the_word, \
+			prop_art_doesnt_contain_the_word, entropy_in_arts_not_containing_the_word
+		ig = - prop_art_contains_the_word * entropy_in_arts_containing_the_word \
+			 - prop_art_doesnt_contain_the_word * entropy_in_arts_not_containing_the_word
 		return ig
 
 

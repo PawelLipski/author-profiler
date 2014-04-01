@@ -131,8 +131,8 @@ class CWCorpusProcessor(CorpusProcessor):
 		nf = self.div_or_zero(female_not_containing, total_not_containing)
 		print total_not_containing, male_not_containing, female_not_containing, nm, nf
 
-		entropy_word_present = m * log2_or_zero(m) + f * log2_or_zero(f)
-		entropy_word_absent = nm * log2_or_zero(nm) + nf * log2_or_zero(nf)
+		entropy_word_present = - m * log2_or_zero(m) - f * log2_or_zero(f)
+		entropy_word_absent = - nm * log2_or_zero(nm) - nf * log2_or_zero(nf)
 
 		# use div_or_zero in the case corpus is empty (self.total_number() == 0)
 		prop_contains = self.div_or_zero(total_containing, self.get_total_number())

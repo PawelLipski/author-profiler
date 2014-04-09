@@ -1,5 +1,11 @@
 *.py[cod]
 
+# Scripts, binary files, executables
+*.sh
+*.dat
+svm-train
+svm-predict
+
 # PyCharm files
 
 .idea/

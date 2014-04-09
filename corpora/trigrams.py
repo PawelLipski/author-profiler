@@ -58,6 +58,9 @@ class TrigramsCorpus(Corpus):
 	
 	def get_features_for_data(self, data):
 		data = TextNormalizerProcessor.process(data)
-		trigrams_number = len(data)-2
-		features = [float(data.count(trigram))/trigrams_number*self.VECTOR_MULTIPLIER for trigram in self.trigrams]
+		if len(data) >= 3:
+			trigrams_number = len(data)-2
+			features = [float(data.count(trigram))/trigrams_number*self.VECTOR_MULTIPLIER for trigram in self.trigrams]
+		else:
+			features = [0 for trigram in self.trigrams]
 		return features

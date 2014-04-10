@@ -80,13 +80,19 @@ class TrigramSplitter:
 
 			yield current_word
 
+class WordSplitter:
+
+	@staticmethod
+	def split(data):
+		for word in data.split():
+			yield word
 
 class HighestInfogainCorpusCreator(CorpusCreator):
 
 	MOST_COMMON_TAKEN = 10000
 	HIGHEST_INFOGAINS_TAKEN = 1000
 
-	def __init__(self):
+	def __init__(self, data_splitter):
 
 		print 'instantiate HighestInfogainCorpusCreator'
 
@@ -94,12 +100,13 @@ class HighestInfogainCorpusCreator(CorpusCreator):
 		self.elems_classification = AutoDict(AutoDict)
 		self.articles_classification = AutoDict()
 
-		self.data_splitter = TrigramSplitter
+		self.data_splitter = data_splitter
 
 	def feed_data(self, data, classification):
 
 		data = TextNormalizerProcessor.process(data)
 
+		print data
 		article_elems_list = list(self.data_splitter.split(data))
 		article_elems_set = set(article_elems_list)
 
@@ -122,7 +129,19 @@ class HighestInfogainCorpusCreator(CorpusCreator):
 
 		elems_infogain = [x[0] for x in elems_infogain[0:self.HIGHEST_INFOGAINS_TAKEN]]
 
-		return ElementsFrequencyCorpus(elems_infogain, TrigramSplitter())
+		return ElementsFrequencyCorpus(elems_infogain, self.data_splitter)
+
+
+class HighestInfogainTrigramsCorpusCreator(HighestInfogainCorpusCreator):
+
+	def __init__(self):
+		HighestInfogainCorpusCreator.__init__(self, TrigramSplitter())
+
+
+class HighestInfogainWordsCorpusCreator(HighestInfogainCorpusCreator):
+
+	def __init__(self):
+		HighestInfogainCorpusCreator.__init__(self, WordSplitter())
 
 
 class ElementsFrequencyCorpus(Corpus):

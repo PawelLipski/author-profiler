@@ -62,20 +62,21 @@ class HighestInfogainCorpusCreator(CorpusCreator):
 			self.elems_classification[elem][classification.to_int()] += 1
 
 	def create_corpus(self):
-    # TODO sorting order?
-		elems_freq_sorted = sorted(self.elems_frequency.iteritems(), key=operator.itemgetter(1))
+
+		minus_pair_right = lambda (x, y): -y
+
+		elems_freq_sorted = sorted(self.elems_frequency.iteritems(), key=minus_pair_right)
 
 		elems_infogain = [
 			(x[0], InformationGainMetric.get_infogain(self.articles_classification, self.elems_classification[x[0]]))
 				for x in elems_freq_sorted[0:self.MOST_COMMON_TAKEN]
 		]
 
-    # TODO sorting order?
-		elems_infogain = sorted(elems_infogain, key=operator.itemgetter(1))
+		elems_infogain = sorted(elems_infogain, key=minus_pair_right)
 
-		elems_infogain = [x[0] for x in elems_infogain[0:self.HIGHEST_INFOGAINS_TAKEN]]
+		chosen_elems = [x[0] for x in elems_infogain[0:self.HIGHEST_INFOGAINS_TAKEN]]
 
-		return ElementsFrequencyCorpus(elems_infogain, self.data_splitter)
+		return ElementsFrequencyCorpus(chosen_elems, self.data_splitter)
 
 
 class HighestInfogainTrigramsCorpusCreator(HighestInfogainCorpusCreator):
@@ -150,6 +151,8 @@ class PartOfSpeechCorpusCreator(CorpusCreator):
 
     # TODO sorting order?
 		bigrams_sorted = sorted(bigram_freqs.iteritems(), key=operator.itemgetter(1))
+
+		# TODO cut 1000 first
 
 		bigrams_most_common = map(operator.itemgetter(0), bigrams_sorted)
 

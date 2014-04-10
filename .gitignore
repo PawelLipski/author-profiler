@@ -1,13 +1,17 @@
 *.py[cod]
 
+# Temporary directories
+pickled_classifiers/
+test_outputs/
+
 # Scripts, binary files, executables
 *.sh
 *.dat
 svm-train
 svm-predict
+*.exe
 
 # PyCharm files
-
 .idea/
 
 # C extensions

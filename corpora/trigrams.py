@@ -11,10 +11,10 @@ class TrigramsCorpusCreator(CorpusCreator):
 	
 	def __init__(self):
 		self.trigrams_frequency = AutoDict()
-		self.trigrams_clasification = AutoDict(AutoDict)
-		self.articles_clasification = AutoDict()
+		self.trigrams_classification = AutoDict(AutoDict)
+		self.articles_classification = AutoDict()
 	
-	def feed_data(self, data, clasification):
+	def feed_data(self, data, classification):
 		data = TextNormalizerProcessor.process(data)
 		
 		article_trigrams = dict()
@@ -29,14 +29,14 @@ class TrigramsCorpusCreator(CorpusCreator):
 			article_trigrams[current_word] = 1
 			self.trigrams_frequency[current_word] += 1
 		
-		self.articles_clasification[clasification.to_int()] += 1
+		self.articles_classification[classification.to_int()] += 1
 		for trigram in article_trigrams:
-			self.trigrams_clasification[trigram][clasification.to_int()] += 1
+			self.trigrams_classification[trigram][classification.to_int()] += 1
 	
 	def create_corpus(self):
 		trigrams_freq_sorted = sorted(self.trigrams_frequency.iteritems(), key=operator.itemgetter(1))
 		trigrams_infogain = [
-			(x[0], InformationGainMetric.get_infogain(self.articles_clasification, self.trigrams_clasification[x[0]]))
+			(x[0], InformationGainMetric.get_infogain(self.articles_classification, self.trigrams_classification[x[0]]))
 				for x in trigrams_freq_sorted[0:self.MOST_COMMON_TAKEN]
 		]
 		

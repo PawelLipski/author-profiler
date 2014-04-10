@@ -1,3 +1,4 @@
+import re
 from helpers.interfaces import *
 from helpers.utils import AutoDict
 from helpers.infogain import InformationGainMetric
@@ -65,11 +66,16 @@ class TrigramsCorpus(Corpus):
 			features = [0 for trigram in self.trigrams]
 		return features
 
+class Splitter:
 
-class TrigramSplitter:
+	pattern = re.compile('[.,;?!-_\r\n\t \'\"\\/\[\]*]')
+
+class TrigramSplitter(Splitter):
 
 	@staticmethod
 	def split(data):
+
+		data = Splitter.pattern.sub('', data.lower())
 
 		current_word = ''
 		for character in data:
@@ -80,21 +86,21 @@ class TrigramSplitter:
 
 			yield current_word
 
-class WordSplitter:
+class WordSplitter(Splitter):
 
 	@staticmethod
 	def split(data):
-		for word in data.split():
-			yield word
+
+		data = Splitter.pattern.split(data.lower())
+		data = filter(None, data)
+		return data
 
 class HighestInfogainCorpusCreator(CorpusCreator):
 
 	MOST_COMMON_TAKEN = 10000
-	HIGHEST_INFOGAINS_TAKEN = 1000
+ 	HIGHEST_INFOGAINS_TAKEN = 1000
 
 	def __init__(self, data_splitter):
-
-		print 'instantiate HighestInfogainCorpusCreator'
 
 		self.elems_frequency = AutoDict()
 		self.elems_classification = AutoDict(AutoDict)
@@ -104,9 +110,6 @@ class HighestInfogainCorpusCreator(CorpusCreator):
 
 	def feed_data(self, data, classification):
 
-		data = TextNormalizerProcessor.process(data)
-
-		print data
 		article_elems_list = list(self.data_splitter.split(data))
 		article_elems_set = set(article_elems_list)
 
@@ -160,7 +163,6 @@ class ElementsFrequencyCorpus(Corpus):
 
 	def get_features_for_data(self, data):
 
-		data = TextNormalizerProcessor.process(data)
 		given = list(self.data_splitter.split(data))
 
 		if len(given) > 0:

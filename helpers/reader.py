@@ -9,7 +9,8 @@ class DataReader:
 	
 	def __iter__(self):
 		def iterator():
-			for file in glob.iglob(self.path):
+			for no, file in enumerate(glob.iglob(self.path)):
+				print no
 				domo = dom.parse(file)
 				
 				gender = domo.documentElement.getAttribute('gender')

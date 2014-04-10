@@ -1,15 +1,17 @@
 from helpers.interfaces import *
-from corpora.trigrams import TrigramsCorpusCreator
+from corpora.trigrams import HighestInfogainCorpusCreator
+
 
 class CorporaCreator(CorpusCreator):
 	def __init__(self):
 		self.corpus_creators = [
-			TrigramsCorpusCreator()
+			#TrigramsCorpusCreator()
+			HighestInfogainCorpusCreator()
 		]
 	
-	def feed_data(self, data, clasification):
+	def feed_data(self, data, classification):
 		for i in self.corpus_creators:
-			i.feed_data(data, clasification)
+			i.feed_data(data, classification)
 	
 	def get_corpora(self):
 		return Corpora([x.create_corpus() for x in self.corpus_creators])

@@ -1,70 +1,11 @@
 import re
+# TODO
+#import nltk
 from helpers.interfaces import *
 from helpers.utils import AutoDict
 from helpers.infogain import InformationGainMetric
-from textprocess.normalize import TextNormalizerProcessor
 
 import operator
-
-class TrigramsCorpusCreator(CorpusCreator):
-	MOST_COMMON_TAKEN = 10000
-	HIGHEST_INFOGAINS_TAKEN = 1000
-	
-	def __init__(self):
-		self.trigrams_frequency = AutoDict()
-		self.trigrams_classification = AutoDict(AutoDict)
-		self.articles_classification = AutoDict()
-	
-	def feed_data(self, data, classification):
-		data = TextNormalizerProcessor.process(data)
-		
-		article_trigrams = dict()
-		
-		current_word = ''
-		for character in data:
-			current_word = (current_word + character)[-3:]
-			
-			if len(current_word) < 3:
-				continue
-			
-			article_trigrams[current_word] = 1
-			self.trigrams_frequency[current_word] += 1
-		
-		self.articles_classification[classification.to_int()] += 1
-		for trigram in article_trigrams:
-			self.trigrams_classification[trigram][classification.to_int()] += 1
-	
-	def create_corpus(self):
-		trigrams_freq_sorted = sorted(self.trigrams_frequency.iteritems(), key=operator.itemgetter(1))
-		trigrams_infogain = [
-			(x[0], InformationGainMetric.get_infogain(self.articles_classification, self.trigrams_classification[x[0]]))
-				for x in trigrams_freq_sorted[0:self.MOST_COMMON_TAKEN]
-		]
-		
-		trigrams_infogain = sorted(trigrams_infogain, key=operator.itemgetter(1))
-		
-		return TrigramsCorpus([x[0] for x in trigrams_infogain[0:self.HIGHEST_INFOGAINS_TAKEN]])
-
-class TrigramsCorpus(Corpus):
-	VECTOR_MULTIPLIER = 1000
-	
-	def __init__(self, trigrams = []):
-		self.trigrams = trigrams
-	
-	def __getstate__(self):
-		return self.trigrams
-	
-	def __setstate__(self, state):
-		self.trigrams = state
-	
-	def get_features_for_data(self, data):
-		data = TextNormalizerProcessor.process(data)
-		if len(data) >= 3:
-			trigrams_number = len(data)-2
-			features = [float(data.count(trigram))/trigrams_number*self.VECTOR_MULTIPLIER for trigram in self.trigrams]
-		else:
-			features = [0 for trigram in self.trigrams]
-		return features
 
 class Splitter:
 
@@ -121,6 +62,7 @@ class HighestInfogainCorpusCreator(CorpusCreator):
 			self.elems_classification[elem][classification.to_int()] += 1
 
 	def create_corpus(self):
+    # TODO sorting order?
 		elems_freq_sorted = sorted(self.elems_frequency.iteritems(), key=operator.itemgetter(1))
 
 		elems_infogain = [
@@ -128,6 +70,7 @@ class HighestInfogainCorpusCreator(CorpusCreator):
 				for x in elems_freq_sorted[0:self.MOST_COMMON_TAKEN]
 		]
 
+    # TODO sorting order?
 		elems_infogain = sorted(elems_infogain, key=operator.itemgetter(1))
 
 		elems_infogain = [x[0] for x in elems_infogain[0:self.HIGHEST_INFOGAINS_TAKEN]]
@@ -178,3 +121,37 @@ class ElementsFrequencyCorpus(Corpus):
 
 		return features
 
+
+class PartOfSpeechCorpusCreator(CorpusCreator):
+
+	MOST_COMMON_UNIGRAMS = 38
+	MOST_COMMON_BIGRAMS = 1000
+
+	def __init__(self):
+		self.unigram_freqs = AutoDict()
+		self.bigram_freqs = AutoDict()
+
+	def feed_data(self, data, classification):
+
+		words = WordSplitter.split(data)
+		prev_pos = None
+
+		for word in words:
+			cur_pos = nltk.pos_tag(word)
+      # TODO exceptions? unknown word etc.
+			self.unigram_freqs[cur_pos] += 1
+			if prev_pos != None:
+				self.bigram_freqs[(prev_pos, cur_pos)] += 1
+			prev_pos = cur_pos
+
+
+	def create_corpus(self):
+    # TODO to sort or not to sort unigram freqs?
+
+    # TODO sorting order?
+		bigrams_sorted = sorted(bigram_freqs.iteritems(), key=operator.itemgetter(1))
+
+		bigrams_most_common = map(operator.itemgetter(0), bigrams_sorted)
+
+    # TODO
+		return None

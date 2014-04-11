@@ -4,8 +4,8 @@ from helpers.classification import Classification
 import tempfile, subprocess, sys
 
 class Classifier:
-	def __init__(self):
-		self.corpora_creator = CorporaCreator(['CW'])
+	def __init__(self, corpus_symbols):
+		self.corpora_creator = CorporaCreator(corpus_symbols)
 		self.corpora = None
 	
 	def __getstate__(self):

@@ -11,9 +11,9 @@ class CorporaCreator(CorpusCreator):
 		 'CW': HighestInfogainWordsCorpusCreator,
 	}
 	
-	def __init__(self, creator_symbols):
+	def __init__(self, corpus_symbols):
 		self.corpus_creators = [ 
-			self.CREATORS[creator_symbol]() for creator_symbol in creator_symbols
+			self.CREATORS[corpus_symbol]() for corpus_symbol in corpus_symbols
 		]
 	
 	def feed_data(self, data, classification):

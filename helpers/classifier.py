@@ -48,7 +48,7 @@ class Classifier:
 		
 		result = open('result.dat', 'w+') #tempfile.NamedTemporaryFile('r')
 		
-		subprocess.check_call(['svm-predict', classification_data.name, 'train-results.dat', result.name])
+		subprocess.check_call(['svm-predict', '-q', classification_data.name, 'train-results.dat', result.name])
 		
 		return Classification.from_int(int(result.read(16)))
 		

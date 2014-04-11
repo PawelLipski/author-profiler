@@ -171,7 +171,6 @@ class PartOfSpeechCorpus(Corpus):
 
 class PartOfSpeechCorpusCreator(CorpusCreator):
 
-	MOST_COMMON_UNIGRAMS = 38
 	MOST_COMMON_BIGRAMS = 1000
 
 	def __init__(self):
@@ -203,4 +202,20 @@ class PartOfSpeechCorpusCreator(CorpusCreator):
 		bigrams_most_common = map(operator.itemgetter(0), bigrams_sorted[:self.MOST_COMMON_BIGRAMS])
   
 		return PartOfSpeechCorpus(unigrams_most_common, bigrams_most_common)
+
+class FunctionWordsCorpusCreator(CorpusCreator):
+
+	FUNCTION_WORDS_FILE = 'fws.txt'
+
+	def __init__(self):
+		pass
+
+	def feed_data(self, data, classification):
+		pass
+
+	def create_corpus(self):
+
+		function_words = [l.rstrip() for l in open(self.FUNCTION_WORDS_FILE).readlines()]
+
+		return ElementsFrequencyCorpus(function_words, WordSplitter())
 

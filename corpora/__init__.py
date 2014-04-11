@@ -5,8 +5,9 @@ from corpora.trigrams import *
 class CorporaCreator(CorpusCreator):
 	def __init__(self):
 		self.corpus_creators = [
-			PartOfSpeechCorpusCreator()
-			#HighestInfogainTrigramsCorpusCreator(),
+			#FunctionWordsCorpusCreator(),
+			#PartOfSpeechCorpusCreator(),
+			HighestInfogainTrigramsCorpusCreator(),
 			#HighestInfogainWordsCorpusCreator()
 		]
 	

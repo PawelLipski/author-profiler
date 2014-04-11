@@ -12,8 +12,10 @@ classifier = pickle.load(file)
 file.close()
 
 reader = DataReader(sys.argv[1])
-data, classification = reader.__iter__().next()
+data, expected = reader.__iter__().next()
 
-print 'Expected: ' + str(classification)
-result = classifier.classify(data)
-print 'Predicted: ' + str(result)
+print 'Expected: ' + str(expected)
+predicted = classifier.classify(data)
+print 'Predicted: ' + str(predicted)
+print 'SAME' if expected.to_int() == predicted.to_int() else 'DIFFERENT'
+

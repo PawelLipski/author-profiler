@@ -3,36 +3,7 @@ import re
 import nltk
 from helpers.interfaces import *
 from helpers.utils import AutoDict
-
-
-class Splitter:
-
-	pattern = re.compile('[.,;?!-_\r\n\t \'\"\\/\[\]*]')
-
-class TrigramSplitter(Splitter):
-
-	@staticmethod
-	def split(data):
-
-		data = Splitter.pattern.sub('', data.lower())
-
-		current_word = ''
-		for character in data:
-			current_word = (current_word + character)[-3:]
-
-			if len(current_word) < 3:
-				continue
-
-			yield current_word
-
-class WordSplitter(Splitter):
-
-	@staticmethod
-	def split(data):
-
-		data = Splitter.pattern.split(data.lower())
-		data = filter(None, data)
-		return data
+from textprocess import splitters
 
 
 class ElementsFrequencyCorpus(Corpus):

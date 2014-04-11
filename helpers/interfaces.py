@@ -16,3 +16,10 @@ class TextProcessor:
 	@staticmethod
 	def process(text):
 		pass
+
+class TextSplitter:
+
+	@staticmethod
+	def split(data):
+		pass
+

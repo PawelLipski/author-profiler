@@ -1,7 +1,8 @@
 
-import nltk
 from helpers.utils import AutoDict
 from helpers.infogain import InformationGainMetric
+from helpers.pos import PartOfSpeechTagger
+from textprocess.splitters import *
 from impl import *
 
 import operator
@@ -62,6 +63,7 @@ class HighestInfogainWordsCorpusCreator(HighestInfogainCorpusCreator):
 		HighestInfogainCorpusCreator.__init__(self, WordSplitter())
 
 
+
 class PartOfSpeechCorpusCreator(CorpusCreator):
 
 	MOST_COMMON_BIGRAMS = 1000
@@ -72,17 +74,13 @@ class PartOfSpeechCorpusCreator(CorpusCreator):
 
 	def feed_data(self, data, classification):
 
-		words = WordSplitter.split(data)
-		poses = nltk.pos_tag(words)
+		poses, pos_pairs = PartOfSpeechTagger.pos_ngrams_for_chunk(data)
 
-		prev_pos = None
+		for pos in poses:
+			self.unigram_freqs[pos] += 1
 
-		for cur_pos in poses:
-      # TODO exceptions? unknown word etc.
-			self.unigram_freqs[cur_pos] += 1
-			if prev_pos != None:
-				self.bigram_freqs[(prev_pos, cur_pos)] += 1
-			prev_pos = cur_pos
+		for pos_pair in pos_pairs:
+			self.bigram_freqs[pos_pair] += 1
 
 
 	def create_corpus(self):

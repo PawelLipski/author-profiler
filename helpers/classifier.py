@@ -5,7 +5,7 @@ import tempfile, subprocess, sys
 
 class Classifier:
 	def __init__(self):
-		self.corpora_creator = CorporaCreator()
+		self.corpora_creator = CorporaCreator(['CW'])
 		self.corpora = None
 	
 	def __getstate__(self):

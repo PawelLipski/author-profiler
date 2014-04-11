@@ -3,12 +3,17 @@ from corpora.trigrams import *
 
 
 class CorporaCreator(CorpusCreator):
-	def __init__(self):
-		self.corpus_creators = [
-			#FunctionWordsCorpusCreator(),
-			#PartOfSpeechCorpusCreator(),
-			HighestInfogainTrigramsCorpusCreator(),
-			#HighestInfogainWordsCorpusCreator()
+
+	CREATORS = {
+		 'FW': FunctionWordsCorpusCreator,
+		'POS': PartOfSpeechCorpusCreator,
+		'CNG': HighestInfogainTrigramsCorpusCreator,
+		 'CW': HighestInfogainWordsCorpusCreator,
+	}
+	
+	def __init__(self, creator_symbols):
+		self.corpus_creators = [ 
+			self.CREATORS[creator_symbol]() for creator_symbol in creator_symbols
 		]
 	
 	def feed_data(self, data, classification):

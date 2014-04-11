@@ -19,7 +19,8 @@ class Classifier:
 			self.corpora_creator.feed_data(data, classification)
 		
 		self.corpora = self.corpora_creator.get_corpora()
-		train_data = open('train_data.dat', 'w') #tempfile.NamedTemporaryFile()
+		#train_data = open('train_data.dat', 'w') 
+		train_data = tempfile.NamedTemporaryFile()
 		
 		for data, classification in data_reader:
 			features = self.corpora.get_features_for_data(data)
@@ -34,7 +35,8 @@ class Classifier:
 		result = subprocess.check_call(['svm-train', train_data.name, 'train-results.dat'])
 	
 	def classify(self, data):
-		classification_data = open('classification_data.dat', 'w') #tempfile.NamedTemporaryFile()
+		#classification_data = open('classification_data.dat', 'w') 
+		classification_data = tempfile.NamedTemporaryFile()
 		
 		features = self.corpora.get_features_for_data(data)
 		classification_data.write('1')
@@ -46,7 +48,8 @@ class Classifier:
 		#sys.stdout.write("\n")
 		classification_data.flush()
 		
-		result = open('result.dat', 'w+') #tempfile.NamedTemporaryFile('r')
+		#result = open('result.dat', 'w+') 
+		result = tempfile.NamedTemporaryFile('r')
 		
 		subprocess.check_call(['svm-predict', '-q', classification_data.name, 'train-results.dat', result.name])
 		

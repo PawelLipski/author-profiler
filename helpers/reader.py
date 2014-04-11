@@ -1,3 +1,4 @@
+import sys
 import glob
 import xml.dom.minidom as dom
 from textprocess.tags import TagsStripperProcessor
@@ -10,7 +11,8 @@ class DataReader:
 	def __iter__(self):
 		def iterator():
 			for no, file in enumerate(glob.iglob(self.path)):
-				#print no
+				print no,
+				sys.stdout.flush()
 				domo = dom.parse(file)
 				
 				gender = domo.documentElement.getAttribute('gender')
@@ -22,5 +24,6 @@ class DataReader:
 					text = conversation.firstChild.nodeValue
 					text = TagsStripperProcessor.process(text)
 					yield text, classification
+			print 
 		
 		return iterator()

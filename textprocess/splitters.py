@@ -9,16 +9,20 @@ class TrigramSplitter(TextSplitter):
 	@staticmethod
 	def split(data):
 
-		data = PATTERN.sub('', data.lower())
+		def _split(data):
+			data = PATTERN.sub('', data.lower())
 
-		current_word = ''
-		for character in data:
-			current_word = (current_word + character)[-3:]
+			current_word = ''
+			for character in data:
+				current_word = (current_word + character)[-3:]
 
-			if len(current_word) < 3:
-				continue
+				if len(current_word) < 3:
+					continue
 
-			yield current_word
+				yield current_word
+
+		return list(_split(data))
+
 
 class WordSplitter(TextSplitter):
 

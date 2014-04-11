@@ -1,5 +1,6 @@
+
 from helpers.interfaces import *
-from corpora.trigrams import *
+from creators import *
 
 
 class CorporaCreator(CorpusCreator):

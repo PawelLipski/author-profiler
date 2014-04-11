@@ -1,12 +1,13 @@
 from helpers.interfaces import *
-from corpora.trigrams import HighestInfogainTrigramsCorpusCreator, HighestInfogainWordsCorpusCreator
+from corpora.trigrams import *
 
 
 class CorporaCreator(CorpusCreator):
 	def __init__(self):
 		self.corpus_creators = [
-			HighestInfogainTrigramsCorpusCreator(),
-			HighestInfogainWordsCorpusCreator()
+			PartOfSpeechCorpusCreator()
+			#HighestInfogainTrigramsCorpusCreator(),
+			#HighestInfogainWordsCorpusCreator()
 		]
 	
 	def feed_data(self, data, classification):

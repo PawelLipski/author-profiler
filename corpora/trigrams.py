@@ -1,6 +1,5 @@
 import re
-# TODO
-#import nltk
+import nltk
 from helpers.interfaces import *
 from helpers.utils import AutoDict
 from helpers.infogain import InformationGainMetric
@@ -122,6 +121,53 @@ class ElementsFrequencyCorpus(Corpus):
 
 		return features
 
+class PartOfSpeechCorpus(Corpus):
+
+	def init_freqs(self):
+
+		self.unigram_freqs = AutoDict()
+		self.bigram_freqs = AutoDict()
+
+	def __init__(self, unigrams_most_common, bigrams_most_common):
+
+		self.unigrams_most_common = unigrams_most_common
+		self.bigrams_most_common = bigrams_most_common
+
+		self.init_freqs()
+
+	def __getstate__(self):
+
+		return self.unigrams_most_common, self.bigrams_most_common
+
+	def __setstate__(self, state):
+
+		self.unigrams_most_common, self.bigrams_most_common = state
+
+		self.init_freqs()
+
+	def flatten_features(self, most_common, freqs):
+
+		return [freqs[gram] for gram in most_common]
+
+	def get_features_for_data(self, data):
+
+		words = WordSplitter.split(data)
+		poses = nltk.pos_tag(words)
+
+		prev_pos = None
+
+		for cur_pos in poses:
+      # TODO exceptions? unknown word etc.
+			self.unigram_freqs[cur_pos] += 1
+			if prev_pos != None:
+				self.bigram_freqs[(prev_pos, cur_pos)] += 1
+			prev_pos = cur_pos
+
+		unigram_features = self.flatten_features(self.unigrams_most_common, self.unigram_freqs)
+		bigram_features = self.flatten_features(self.bigrams_most_common, self.bigram_freqs)
+
+		return unigram_features + bigram_features
+
 
 class PartOfSpeechCorpusCreator(CorpusCreator):
 
@@ -135,10 +181,11 @@ class PartOfSpeechCorpusCreator(CorpusCreator):
 	def feed_data(self, data, classification):
 
 		words = WordSplitter.split(data)
+		poses = nltk.pos_tag(words)
+
 		prev_pos = None
 
-		for word in words:
-			cur_pos = nltk.pos_tag(word)
+		for cur_pos in poses:
       # TODO exceptions? unknown word etc.
 			self.unigram_freqs[cur_pos] += 1
 			if prev_pos != None:
@@ -147,14 +194,13 @@ class PartOfSpeechCorpusCreator(CorpusCreator):
 
 
 	def create_corpus(self):
-    # TODO to sort or not to sort unigram freqs?
 
-    # TODO sorting order?
-		bigrams_sorted = sorted(bigram_freqs.iteritems(), key=operator.itemgetter(1))
+		unigrams_most_common = self.unigram_freqs
 
-		# TODO cut 1000 first
+		minus_pair_right = lambda (x, y): -y
+		bigrams_sorted = sorted(self.bigram_freqs.iteritems(), key=minus_pair_right)
 
-		bigrams_most_common = map(operator.itemgetter(0), bigrams_sorted)
+		bigrams_most_common = map(operator.itemgetter(0), bigrams_sorted[:self.MOST_COMMON_BIGRAMS])
+  
+		return PartOfSpeechCorpus(unigrams_most_common, bigrams_most_common)
 
-    # TODO
-		return None

@@ -1,4 +1,4 @@
-from helpers.reader import DataReader 
+from helpers.reader import *
 from helpers.classifier import Classifier
 
 import pickle

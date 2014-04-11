@@ -11,11 +11,11 @@ file = open('classifier.dat', 'r')
 classifier = pickle.load(file)
 file.close()
 
-reader = DataReader(sys.argv[1])
-data, expected = reader.__iter__().next()
+reader = DataReader(sys.argv[1] + '*.xml')
+#data_set, expected = zip(*reader)
 
-print 'Expected: ' + str(expected)
-predicted = classifier.classify(data)
-print 'Predicted: ' + str(predicted)
-print 'SAME' if expected.to_int() == predicted.to_int() else 'DIFFERENT'
+#print 'Expected: ' + str([c.to_int() for c in expected])
+predicted = classifier.classify(reader)
+#print 'Predicted: ' + str([c.to_int() for c in predicted])
+#print 'SAME' if expected.to_int() == predicted.to_int() else 'DIFFERENT'
 

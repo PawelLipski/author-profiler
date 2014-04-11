@@ -19,8 +19,8 @@ class Classifier:
 			self.corpora_creator.feed_data(data, classification)
 		
 		self.corpora = self.corpora_creator.get_corpora()
-		#train_data = open('train_data.dat', 'w') 
-		train_data = tempfile.NamedTemporaryFile()
+		train_data = open('train_data.dat', 'w') 
+		#train_data = tempfile.NamedTemporaryFile()
 		
 		for data, classification in data_reader:
 			features = self.corpora.get_features_for_data(data)
@@ -32,26 +32,27 @@ class Classifier:
 		
 		train_data.flush()
 		
-		result = subprocess.check_call(['svm-train', train_data.name, 'train-results.dat'])
+		result = subprocess.check_call(['svm-train', '-q', train_data.name, 'train-results.dat'])
 	
-	def classify(self, data):
-		#classification_data = open('classification_data.dat', 'w') 
-		classification_data = tempfile.NamedTemporaryFile()
-		
-		features = self.corpora.get_features_for_data(data)
-		classification_data.write('1')
-		#sys.stdout.write('1')
-		for i in range(len(features)):
-			classification_data.write(' '+str(i+1)+':'+str(features[i]))
-			#sys.stdout.write(' '+str(i+1)+':'+str(features[i]))
-		classification_data.write("\n")
-		#sys.stdout.write("\n")
-		classification_data.flush()
-		
-		#result = open('result.dat', 'w+') 
-		result = tempfile.NamedTemporaryFile('r')
-		
-		subprocess.check_call(['svm-predict', '-q', classification_data.name, 'train-results.dat', result.name])
-		
-		return Classification.from_int(int(result.read(16)))
+	def classify(self, data_reader):
+
+		classification_data = open('classification_data.dat', 'w')
+		#classification_data = tempfile.NamedTemporaryFile()
+		#classification_data.write(str(len(data_set)) + "\n")
+
+		for data, classification in data_reader:
+			features = self.corpora.get_features_for_data(data)
+			classification_data.write(str(classification.to_int()) + ' ')
+			for i in range(len(features)):
+				value = str(i+1)+':'+str(features[i])+' '
+				classification_data.write(value)
+			classification_data.write("\n")
+		classification_data.flush()		
+
+		result_file = open('result.dat', 'w+') 
+		#result = tempfile.NamedTemporaryFile('r')
+		subprocess.check_call(['svm-predict', classification_data.name, 'train-results.dat', result_file.name])
+
+		results = map(int, result_file.readlines())
+		return [Classification.from_int(cls) for cls in results]
 		

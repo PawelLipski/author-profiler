@@ -19,7 +19,7 @@ class Classifier:
 			self.corpora_creator.feed_data(data, classification)
 		
 		self.corpora = self.corpora_creator.get_corpora()
-		train_data = open('train_data.dat', 'w') 
+		train_data = open('train-data.dat', 'w') 
 		#train_data = tempfile.NamedTemporaryFile()
 		
 		for data, classification in data_reader:
@@ -36,7 +36,7 @@ class Classifier:
 	
 	def classify(self, data_reader):
 
-		classification_data = open('classification_data.dat', 'w')
+		classification_data = open('classification-data.dat', 'w')
 		#classification_data = tempfile.NamedTemporaryFile()
 		#classification_data.write(str(len(data_set)) + "\n")
 

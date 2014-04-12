@@ -1,11 +1,10 @@
 *.py[cod]
 
 # Temporary directories
-pickled_classifiers/
+test-outputs/
 test_outputs/
 
-# Scripts, binary files, executables
-*.sh
+# Binary files, executables
 *.dat
 svm-train
 svm-predict

@@ -3,7 +3,7 @@ import re
 import nltk
 from helpers.interfaces import *
 from helpers.utils import AutoDict
-from textprocess import splitters
+from textprocess.splitters import *
 
 
 class ElementsFrequencyCorpus(Corpus):

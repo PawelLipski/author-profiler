@@ -21,9 +21,11 @@ class DataReader:
 				
 				conversations = domo.getElementsByTagName('conversation')
 				for conversation in conversations:
-					text = conversation.firstChild.nodeValue
-					text = TagsStripperProcessor.process(text)
-					yield text, classification
+					child = conversation.firstChild
+					if not (child is None):
+						text = child.nodeValue
+						text = TagsStripperProcessor.process(text)
+						yield text, classification
 			print 
 		
 		return iterator()

@@ -18,7 +18,6 @@ class TextProcessor:
 		pass
 
 class TextSplitter:
-
 	@staticmethod
 	def split(data):
 		pass

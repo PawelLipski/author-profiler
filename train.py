@@ -1,18 +1,31 @@
-from helpers.reader import *
+#!/usr/bin/env python
+
+import argparse
+parser = argparse.ArgumentParser(description='Creates model for author profiling using given corpus.')
+parser.add_argument('-i', metavar='corpus_dir', required=True, help='path to dir containing *.xml files')
+parser.add_argument('-o', metavar='model_dir', required=True, help='path to empty dir where model will be saved')
+args = parser.parse_args()
+
+from helpers import Configuration
+Configuration.CorpusDirectory = args.i
+Configuration.ModelDirectory = args.o
+
+from helpers.reader import TrainDataReader
 from helpers.classifier import Classifier
 
 import pickle
 import sys
+import os.path
 
-if len(sys.argv) < 2:
-	print 'Usage: %s xml_dir corpus_symbol...' % sys.argv[0]
-	sys.exit(1)
+classifier = Classifier()
 
-classifier = Classifier(sys.argv[2:])
+if os.path.isfile(Configuration.CorpusDirectory + '/truth.txt'):
+	reader = TrainDataReader(Configuration.CorpusDirectory + '/*.xml', Configuration.CorpusDirectory + '/truth.txt')
+else:
+	reader = TrainDataReader(Configuration.CorpusDirectory + '/*.xml')
 
-reader = DataReader(sys.argv[1] + '*.xml')
 classifier.train(reader)
 
-file = open('classifier.dat', 'w')
+file = open(Configuration.ModelDirectory + '/classifier.dat', 'w')
 pickle.dump(classifier, file)
 file.close()

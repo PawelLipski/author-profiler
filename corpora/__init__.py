@@ -4,7 +4,6 @@ from creators import *
 
 
 class CorporaCreator(CorpusCreator):
-
 	CREATORS = {
 		 'FW': FunctionWordsCorpusCreator,
 		'POS': PartOfSpeechCorpusCreator,
@@ -12,7 +11,10 @@ class CorporaCreator(CorpusCreator):
 		 'CW': HighestInfogainWordsCorpusCreator,
 	}
 	
-	def __init__(self, corpus_symbols):
+	def __init__(self, corpus_symbols = None):
+		if corpus_symbols == None:
+			corpus_symbols = self.CREATORS.keys()
+		
 		self.corpus_creators = [ 
 			self.CREATORS[corpus_symbol]() for corpus_symbol in corpus_symbols
 		]
@@ -22,7 +24,14 @@ class CorporaCreator(CorpusCreator):
 			i.feed_data(data, classification)
 	
 	def get_corpora(self):
-		return Corpora([x.create_corpus() for x in self.corpus_creators])
+		print '   Creating corpora...'
+		corpora_data = []
+		for x in self.corpus_creators:
+			print '      running ' + x.__class__.__name__
+			corpora_data.append(x.create_corpus())
+		print '      DONE!'
+		
+		return Corpora(corpora_data)
 
 class Corpora(Corpus):
 	def __init__(self, corpora = []):

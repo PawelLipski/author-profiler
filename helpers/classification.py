@@ -1,15 +1,15 @@
 class Classification:
-	NUMBER_OF_CATEGORIES = 6
-	MODULO = 3
+	NUMBER_OF_CATEGORIES = 10
+	MODULO = 5
 	
 	GENDER_CATEGORIES = { 'male': 0, 'female': 1 }
-	AGE_CATEGORIES = { '10s': 0, '20s': 1, '30s': 2 }
+	AGE_CATEGORIES = { '18-24':0, '25-34':1, '35-49':2, '50-64':3, '65-xx':4 }
 	
 	GENDER_INVERSE = dict((v,k) for k, v in GENDER_CATEGORIES.items())
 	AGE_INVERSE = dict((v,k) for k, v in AGE_CATEGORIES.items())
 	
 	def __init__(self, gender, age):
-		self.classification = self.GENDER_CATEGORIES[gender]*self.MODULO + self.AGE_CATEGORIES[age]
+		self.classification = self.GENDER_CATEGORIES[gender.lower()]*self.MODULO + self.AGE_CATEGORIES[age.lower()]
 	
 	def to_int(self):
 		return self.classification

@@ -63,7 +63,10 @@ class ClassifyDataReader:
 	
 	def __iter__(self):
 		def iterator():
+			files_num = len(glob.glob(self.path))
+			i = 1
 			for file in glob.iglob(self.path):
+				print '   file ' + str(i) + ' out of '+ str(files_num)
 				authorid = os.path.basename(file)
 				if authorid.find('_') != -1:
 					authorid = authorid.split('_', 2)[0]
@@ -102,7 +105,10 @@ class MixedDataReader:
 					truthdata[line[0]] = Classification(line[1], line[2])
 		
 		def iterator():
+			files_num = len(glob.glob(self.path))
+			i = 1
 			for file in glob.iglob(self.path):
+				print '   file ' + str(i) + ' out of '+ str(files_num)
 				authorid = os.path.basename(file)
 				if authorid.find('_') != -1:
 					authorid = authorid.split('_', 2)[0]

@@ -1,16 +1,15 @@
 
 import re
+
 from helpers.interfaces import TextSplitter
 
-PATTERN = re.compile('[.,;?!-_\r\n\t \'\"\\/\[\]*]')
-
 class TrigramSplitter(TextSplitter):
-
+	expr = re.compile("[\W\d_]+", re.UNICODE)
+	
 	@staticmethod
 	def split(data):
-
 		def _split(data):
-			data = PATTERN.sub('', data.lower())
+			data = TrigramSplitter.expr.sub('', data.lower())
 
 			current_word = ''
 			for character in data:
@@ -25,11 +24,9 @@ class TrigramSplitter(TextSplitter):
 
 
 class WordSplitter(TextSplitter):
-
+	expr = re.compile('[^\s\w]+', re.UNICODE)
+	
 	@staticmethod
 	def split(data):
-
-		data = PATTERN.split(data.lower())
-		data = filter(None, data)
-		return data
-
+		data = WordSplitter.expr.sub('', data.lower())
+		return data.split()

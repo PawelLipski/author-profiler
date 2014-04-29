@@ -13,24 +13,19 @@ Configuration.CorpusDirectory = args.i
 Configuration.ModelDirectory = args.m
 Configuration.OutputDirectory = args.o
 
-from helpers.reader import DataReader
+from helpers.reader import ClassifyDataReader
 
 import pickle
 import sys
-
-if len(sys.argv) < 2:
-	print 'Usage: %s xml_file' % sys.argv[0]
-	sys.exit(1)
 
 file = open(Configuration.ModelDirectory + '/classifier.dat', 'r')
 classifier = pickle.load(file)
 file.close()
 
-reader = ClassifyDataReader(sys.argv[1] + '*.xml')
+reader = ClassifyDataReader(Configuration.CorpusDirectory + '/*.xml')
 authorids, data_set = zip(*reader)
 predicted = classifier.classify(reader)
 
 for i in xrange(0, len(predicted)):
 	# TODO: save results
 	pass
-

@@ -1,17 +1,31 @@
-from helpers.reader import DataReader
+#!/usr/bin/env python
+
+import argparse
+
+parser = argparse.ArgumentParser(description='Classifies given texts and prints out information.')
+parser.add_argument('-i', metavar='corpus_dir', required=True, help='path to dir containing *.xml files')
+parser.add_argument('-m', metavar='model_dir', required=True, help='path to dir containg model files')
+args = parser.parse_args()
+
+from helpers import Configuration
+Configuration.CorpusDirectory = args.i
+Configuration.ModelDirectory = args.m
+
+from helpers.reader import MixedDataReader
 
 import pickle
 import sys
+import os.path
 
-if len(sys.argv) < 2:
-	print 'Usage: %s xml_file' % sys.argv[0]
-	sys.exit(1)
-
-file = open('classifier.dat', 'r')
+file = open(Configuration.ModelDirectory + '/classifier.dat', 'r')
 classifier = pickle.load(file)
 file.close()
 
-reader = MixedDataReader(sys.argv[1] + '*.xml')
+if os.path.isfile(Configuration.CorpusDirectory + '/truth.txt'):
+	reader = MixedDataReader(Configuration.CorpusDirectory + '/*.xml', Configuration.CorpusDirectory + '/truth.txt')
+else:
+	reader = MixedDataReader(Configuration.CorpusDirectory + '/*.xml')
+
 authorids, data_set, expected = zip(*reader)
 predicted = classifier.classify(reader)
 

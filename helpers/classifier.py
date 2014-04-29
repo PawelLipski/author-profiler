@@ -32,14 +32,23 @@ class Classifier:
 			
 			train_data.write(str(classification.to_int()))
 			for i in range(len(features)):
-				train_data.write(' '+str(i+1)+':'+str(features[i]))
+				if features[i] != 0:
+					train_data.write(' '+str(i+1)+':'+str(features[i]))
 			train_data.write("\n")
 		
 		train_data.flush()
+		train_data.close()
+		print '   DONE!'
+		
+		print 'Scaling values...'
+		scaled_data = open('train-data-scaled.dat', 'w')
+		subprocess.check_call(['svm-scale', '-l', '0', '-s', Configuration.ModelDirectory+'/scale.params', train_data.name],
+			stdout=scaled_data)
+		scaled_data.flush()
 		print '   DONE!'
 		
 		print 'Training...'
-		result = subprocess.check_call(['svm-train', train_data.name, Configuration.ModelDirectory+'/train-results.dat'])
+		result = subprocess.check_call(['svm-train', scaled_data.name, Configuration.ModelDirectory+'/train-results.dat'])
 		print '   DONE!'
 	
 	def classify(self, data_reader):
@@ -48,21 +57,33 @@ class Classifier:
 		#classification_data = tempfile.NamedTemporaryFile()
 		#classification_data.write(str(len(data_set)) + "\n")
 		
-		for data, classification in data_reader:
+		j = 1
+		for x in data_reader:
+			data = x[1]
+			
 			features = self.corpora.get_features_for_data(data)
-			classification_data.write(str(classification.to_int()) + ' ')
+			classification_data.write(str(j) + ' ')
 			for i in range(len(features)):
-				value = str(i+1)+':'+str(features[i])+' '
-				classification_data.write(value)
+				if features[i] != 0:
+					value = str(i+1)+':'+str(features[i])+' '
+					classification_data.write(value)
 			classification_data.write("\n")
+			j += 1
 		
 		classification_data.flush()
+		classification_data.close()
+		print '   DONE!'
+
+		print 'Scaling values...'
+		scaled_data = open('classification-data-scaled.dat', 'w')
+		subprocess.check_call(['svm-scale', '-l', '0', '-r', Configuration.ModelDirectory+'/scale.params', classification_data.name],
+			stdout=scaled_data)
+		scaled_data.flush()
 		print '   DONE!'
 
 		print 'Predicting...'
-		result_file = open('result.dat', 'w+') 
-		#result = tempfile.NamedTemporaryFile('r')
-		subprocess.check_call(['svm-predict', classification_data.name, Configuration.ModelDirectory+'/train-results.dat', result_file.name])
+		result_file = open('result.dat', 'w+')
+		subprocess.check_call(['svm-predict', scaled_data.name, Configuration.ModelDirectory+'/train-results.dat', result_file.name])
 		print '   DONE!'
 
 		results = map(int, result_file.readlines())

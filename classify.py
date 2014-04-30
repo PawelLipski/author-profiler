@@ -26,6 +26,6 @@ file.close()
 reader = ClassifyDataReader(Configuration.CorpusDirectory + '/*.xml')
 predictions = classifier.classify(reader)
 
-for authorid, cls in predictions:
-	PredictionWriter.output_prediction(Configuration.OutputDirectory, authorid, cls)
+for authorspec, cls in predictions:
+	PredictionWriter.output_prediction(Configuration.OutputDirectory, authorspec, cls)
 

@@ -68,10 +68,11 @@ class ClassifyDataReader:
 			for file in glob.iglob(self.path):
 				print '   file ' + str(i) + ' out of '+ str(files_num)
 				authorid = os.path.basename(file)
+				lang = ''
 				if authorid.find('_') != -1:
-					authorid = authorid.split('_', 2)[0]
+					authorid, lang = authorid.split('_', 2)[:2]
 				elif authorid.find('.') != -1:
-					authorid = authorid.split('.', 2)[0]
+					authorid, lang = authorid.split('.', 2)[:2]
 				else:
 					raise Exception('Invalid XML filename (cannot find author-id): ' + authorid)
 				
@@ -83,7 +84,7 @@ class ClassifyDataReader:
 					child = document.firstChild
 					text += ' '+TagsStripperProcessor.process(child.nodeValue)
 				
-				yield authorid, text
+				yield (authorid, lang), text
 				i += 1
 		
 		return iterator()

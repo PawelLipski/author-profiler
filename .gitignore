@@ -10,6 +10,9 @@ svm-train
 svm-predict
 *.exe
 
+# vim swap files
+*.swp
+
 # PyCharm files
 .idea/
 

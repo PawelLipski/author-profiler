@@ -75,6 +75,7 @@ class ClassifyDataReader:
 				else:
 					raise Exception('Invalid XML filename (cannot find author-id): ' + authorid)
 				
+				domo = dom.parse(file)
 				documents = domo.getElementsByTagName('document')
 				text = ''
 				

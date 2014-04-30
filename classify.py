@@ -14,6 +14,7 @@ Configuration.ModelDirectory = args.m
 Configuration.OutputDirectory = args.o
 
 from helpers.reader import ClassifyDataReader
+from helpers.writer import PredictionWriter
 
 import pickle
 import sys
@@ -26,5 +27,5 @@ reader = ClassifyDataReader(Configuration.CorpusDirectory + '/*.xml')
 predictions = classifier.classify(reader)
 
 for authorid, cls in predictions:
-	print authorid, cls
+	PredictionWriter.output_prediction(Configuration.OutputDirectory, authorid, cls)
 

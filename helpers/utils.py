@@ -1,3 +1,4 @@
+
 class AutoDict(dict):
 	def __init__(self, initializer = 0):
 		super(dict, self).__init__()
@@ -13,3 +14,4 @@ class AutoDict(dict):
 				self[item] = self.initializer
 			
 			return dict.__getitem__(self, item) 
+

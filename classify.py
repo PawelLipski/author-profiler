@@ -23,9 +23,8 @@ classifier = pickle.load(file)
 file.close()
 
 reader = ClassifyDataReader(Configuration.CorpusDirectory + '/*.xml')
-authorids, data_set = zip(*reader)
-predicted = classifier.classify(reader)
+predictions = classifier.classify(reader)
 
-for i in xrange(0, len(predicted)):
-	# TODO: save results
-	pass
+for authorid, cls in predictions:
+	print authorid, cls
+

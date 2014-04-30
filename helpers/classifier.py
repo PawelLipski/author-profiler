@@ -58,7 +58,11 @@ class Classifier:
 		#classification_data.write(str(len(data_set)) + "\n")
 		
 		j = 1
+		authorids = []
 		for x in data_reader:
+
+			authorid = x[0]
+			authorids += [authorid]
 			data = x[1]
 			
 			features = self.corpora.get_features_for_data(data)
@@ -87,5 +91,7 @@ class Classifier:
 		print '   DONE!'
 
 		results = map(int, result_file.readlines())
-		return [Classification.from_int(cls) for cls in results]
+		clses = [Classification.from_int(cls) for cls in results]
+
+		return zip(authorids, clses)
 		

@@ -24,14 +24,15 @@ class Classifier:
 		self.corpora = self.corpora_creator.get_corpora()
 		print '   DONE!'
 		
-	def perform_training(self, data_reader, file_name_suffix, category_expander):
+	@staticmethod
+	def get_model_file(file_name, file_name_suffix, file_ext):
+		hyphen = ('-' if file_name_suffix else '')
+		return Configuration.ModelDirectory + '/' + file_name + hyphen + file_name_suffix + '.' + file_ext
 
-		def get_model_file(file_name, file_ext):
-			hyphen = ('-' if file_name_suffix else '')
-			return Configuration.ModelDirectory + '/' + file_name + hyphen + file_name_suffix + '.' + file_ext
+	def perform_training(self, data_reader, suffix, category_expander):
 
 		print 'Creating train data file...'
-		train_data = open(get_model_file('train-data', 'dat'), 'w')
+		train_data = open(self.get_model_file('train-data', suffix, 'dat'), 'w')
 		
 		for data, classification in data_reader:
 			features = self.corpora.get_features_for_data(data)
@@ -49,13 +50,13 @@ class Classifier:
 		
 		print 'Scaling values...'
 		scaled_data = open('train-data-scaled.dat', 'w')
-		subprocess.check_call(['svm-scale', '-l', '0', '-s', get_model_file('scale', 'params'), train_data.name],
+		subprocess.check_call(['svm-scale', '-l', '0', '-s', self.get_model_file('scale', suffix, 'params'), train_data.name],
 			stdout=scaled_data)
 		scaled_data.flush()
 		print '   DONE!'
 		
 		print 'Training...'
-		result = subprocess.check_call(['svm-train', scaled_data.name, get_model_file('train-results', 'dat')])
+		result = subprocess.check_call(['svm-train', scaled_data.name, self.get_model_file('train-results', suffix, 'dat')])
 		print '   DONE!'
 
 	def train(self, data_reader):
@@ -63,7 +64,7 @@ class Classifier:
 		self.create_corpora(data_reader)
 
 		category_identity = lambda x: x
-		self.perform_training(data_reader, file_name_suffix = '', category_expander = category_identity)
+		self.perform_training(data_reader, suffix = '', category_expander = category_identity)
 		
 	
 	def classify(self, data_reader):

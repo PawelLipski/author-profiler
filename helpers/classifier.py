@@ -65,20 +65,19 @@ class Classifier:
 
 		category_identity = lambda x: x
 		self.perform_training(data_reader, suffix = '', category_expander = category_identity)
-		
 	
-	def classify(self, data_reader):
+	def strip_author_specs(self, data_reader):
+
+		return [x[0] for x in data_reader]
+
+	def perform_prediction(self, data_reader, suffix):
+
 		print 'Creating prediction data file...'
 		classification_data = open('classification-data.dat', 'w')
-		#classification_data = tempfile.NamedTemporaryFile()
-		#classification_data.write(str(len(data_set)) + "\n")
 		
 		j = 1
-		authorspecs = []
 		for x in data_reader:
 
-			authorspec = x[0]
-			authorspecs += [authorspec]
 			data = x[1]
 			
 			features = self.corpora.get_features_for_data(data)
@@ -106,8 +105,15 @@ class Classifier:
 		subprocess.check_call(['svm-predict', scaled_data.name, Configuration.ModelDirectory+'/train-results.dat', result_file.name])
 		print '   DONE!'
 
-		results = map(int, result_file.readlines())
-		clses = [Classification.from_int(cls) for cls in results]
+		cls_numbers = map(int, result_file.readlines())
+		return cls_numbers
 
-		return zip(authorspecs, clses)
+	def classify(self, data_reader):
+
+		author_specs = self.strip_author_specs(data_reader)
+
+		cls_numbers = self.perform_prediction(data_reader, suffix = '')
+		clses = [Classification.from_int(cls_number) for cls_number in cls_numbers]
+
+		return zip(author_specs, clses)
 		

@@ -73,7 +73,7 @@ class Classifier:
 	def perform_prediction(self, data_reader, suffix):
 
 		print 'Creating prediction data file...'
-		classification_data = open('classification-data.dat', 'w')
+		classification_data = open(self.get_model_file('classification-data', suffix, 'dat'), 'w')
 		
 		j = 1
 		for x in data_reader:
@@ -94,15 +94,15 @@ class Classifier:
 		print '   DONE!'
 
 		print 'Scaling values...'
-		scaled_data = open('classification-data-scaled.dat', 'w')
-		subprocess.check_call(['svm-scale', '-l', '0', '-r', Configuration.ModelDirectory+'/scale.params', classification_data.name],
+		scaled_data = open(self.get_model_file('classification-data-scaled', suffix, 'dat'), 'w')
+		subprocess.check_call(['svm-scale', '-l', '0', '-r', self.get_model_file('scale', suffix, 'params'), classification_data.name],
 			stdout=scaled_data)
 		scaled_data.flush()
 		print '   DONE!'
 
 		print 'Predicting...'
 		result_file = open('result.dat', 'w+')
-		subprocess.check_call(['svm-predict', scaled_data.name, Configuration.ModelDirectory+'/train-results.dat', result_file.name])
+		subprocess.check_call(['svm-predict', scaled_data.name, self.get_model_file('train-results', suffix, 'dat'), result_file.name])
 		print '   DONE!'
 
 		cls_numbers = map(int, result_file.readlines())

@@ -15,22 +15,29 @@ class Classifier:
 	def __setstate__(self, state):
 		self.corpora = state
 	
-	def train(self, data_reader):
-		print 'Creating corpus...'
+	def create_corpora(self, data_reader):
+
+		print 'Creating corpora...'
 		for data, classification in data_reader:
 			self.corpora_creator.feed_data(data, classification)
 		
 		self.corpora = self.corpora_creator.get_corpora()
 		print '   DONE!'
 		
+	def perform_training(self, data_reader, file_name_suffix, category_expander):
+
+		def get_model_file(file_name, file_ext):
+			hyphen = ('-' if file_name_suffix else '')
+			return Configuration.ModelDirectory + '/' + file_name + hyphen + file_name_suffix + '.' + file_ext
+
 		print 'Creating train data file...'
-		train_data = open(Configuration.ModelDirectory+'/train-data.dat', 'w') 
-		#train_data = tempfile.NamedTemporaryFile()
+		train_data = open(get_model_file('train-data', 'dat'), 'w')
 		
 		for data, classification in data_reader:
 			features = self.corpora.get_features_for_data(data)
 			
-			train_data.write(str(classification.to_int()))
+			expanded_category = category_expander(classification.to_int())
+			train_data.write(str(expanded_category))
 			for i in range(len(features)):
 				if features[i] != 0:
 					train_data.write(' '+str(i+1)+':'+str(features[i]))
@@ -42,14 +49,22 @@ class Classifier:
 		
 		print 'Scaling values...'
 		scaled_data = open('train-data-scaled.dat', 'w')
-		subprocess.check_call(['svm-scale', '-l', '0', '-s', Configuration.ModelDirectory+'/scale.params', train_data.name],
+		subprocess.check_call(['svm-scale', '-l', '0', '-s', get_model_file('scale', 'params'), train_data.name],
 			stdout=scaled_data)
 		scaled_data.flush()
 		print '   DONE!'
 		
 		print 'Training...'
-		result = subprocess.check_call(['svm-train', scaled_data.name, Configuration.ModelDirectory+'/train-results.dat'])
+		result = subprocess.check_call(['svm-train', scaled_data.name, get_model_file('train-results', 'dat')])
 		print '   DONE!'
+
+	def train(self, data_reader):
+
+		self.create_corpora(data_reader)
+
+		category_identity = lambda x: x
+		self.perform_training(data_reader, file_name_suffix = '', category_expander = category_identity)
+		
 	
 	def classify(self, data_reader):
 		print 'Creating prediction data file...'

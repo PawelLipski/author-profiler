@@ -5,8 +5,9 @@ from helpers.interfaces import *
 from helpers.utils import AutoDict
 from textprocess.splitters import *
 
+VECTOR_MULTIPLIER = 1000
+
 class ElementsFrequencyCorpus(Corpus):
-	VECTOR_MULTIPLIER = 1000
 	
 	def __init__(self, relevant, data_splitter):
 		self.relevant = relevant
@@ -26,7 +27,7 @@ class ElementsFrequencyCorpus(Corpus):
 			for elem in given:
 				given_frequency[elem] += 1
 			
-			features = [float(given_frequency[elem])/len(given)*self.VECTOR_MULTIPLIER for elem in self.relevant]
+			features = [float(given_frequency[elem])/len(given)*VECTOR_MULTIPLIER for elem in self.relevant]
 		else:
 			features = [0 for elem in self.relevant]
 		
@@ -51,7 +52,10 @@ class PartOfSpeechCorpus(Corpus):
 		self.init_freqs()
 	
 	def flatten_features(self, most_common, freqs):
-		return [freqs[gram] for gram in most_common]
+		flattened = [freqs[gram] for gram in most_common]
+		gram_count = sum(flattened)
+		scaled = [x / gram_count * VECTOR_MULTIPLIER for x in flattened]
+		return scaled
 	
 	def get_features_for_data(self, data):
 		words = WordSplitter.split(data)
@@ -60,7 +64,6 @@ class PartOfSpeechCorpus(Corpus):
 		prev_pos = None
 		
 		for cur_pos in poses:
-			# TODO exceptions? unknown word etc.
 			self.unigram_freqs[cur_pos] += 1
 			if prev_pos != None:
 				self.bigram_freqs[(prev_pos, cur_pos)] += 1

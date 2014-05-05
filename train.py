@@ -11,13 +11,13 @@ Configuration.CorpusDirectory = args.i
 Configuration.ModelDirectory = args.o
 
 from helpers.reader import TrainDataReader
-from helpers.classifier import Classifier
+from helpers.classifier import *
 
 import pickle
 import sys
 import os.path
 
-classifier = Classifier()
+classifier = JointClassifier()
 
 if os.path.isfile(Configuration.CorpusDirectory + '/truth.txt'):
 	reader = TrainDataReader(Configuration.CorpusDirectory + '/*.xml', Configuration.CorpusDirectory + '/truth.txt')
@@ -29,3 +29,4 @@ classifier.train(reader)
 file = open(Configuration.ModelDirectory + '/classifier.dat', 'w')
 pickle.dump(classifier, file)
 file.close()
+

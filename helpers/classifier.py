@@ -4,7 +4,8 @@ from helpers import Configuration
 
 import tempfile, subprocess, sys
 
-class Classifier:
+class BasicClassifier:
+
 	def __init__(self, corpus_symbols = None):
 		self.corpora_creator = CorporaCreator(corpus_symbols)
 		self.corpora = None
@@ -60,12 +61,8 @@ class Classifier:
 		print '   DONE!'
 
 	def train(self, data_reader):
+		raise 'Not implemented'
 
-		self.create_corpora(data_reader)
-
-		category_identity = lambda x: x
-		self.perform_training(data_reader, suffix = '', category_expander = category_identity)
-	
 	def strip_author_specs(self, data_reader):
 
 		return [x[0] for x in data_reader]
@@ -116,4 +113,33 @@ class Classifier:
 		clses = [Classification.from_int(cls_number) for cls_number in cls_numbers]
 
 		return zip(author_specs, clses)
-		
+	
+
+class JointClassifier(BasicClassifier):
+
+	def __init__(self, corpus_symbols = None):
+		BasicClassifier.__init__(self, corpus_symbols)
+
+	def train(self, data_reader):
+
+		self.create_corpora(data_reader)
+
+		category_identity = lambda x: x
+		self.perform_training(data_reader, suffix = '', category_expander = category_identity)
+
+
+class DisjointClassifier(BasicClassifier):
+
+	def __init__(self, corpus_symbols = None):
+		BasicClassifier.__init__(self, corpus_symbols)
+
+	def train(self, data_reader):
+
+		self.create_corpora(data_reader)
+
+		category_gender = Classification.unified_to_gender_int
+		self.perform_training(data_reader, suffix = '-gender', category_expander = category_gender)
+
+		category_age = Classification.unified_to_age_int
+		self.perform_training(data_reader, suffix = '-age', category_expander = category_age)
+

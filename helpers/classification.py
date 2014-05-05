@@ -1,4 +1,6 @@
+
 class Classification:
+
 	NUMBER_OF_CATEGORIES = 10
 	MODULO = 5
 	
@@ -7,9 +9,23 @@ class Classification:
 	
 	GENDER_INVERSE = dict((v,k) for k, v in GENDER_CATEGORIES.items())
 	AGE_INVERSE = dict((v,k) for k, v in AGE_CATEGORIES.items())
-	
+
+	@staticmethod
+	def gender_age_ints_to_unified(gender, age):
+		return gender * Classification.MODULO + age
+
+	@staticmethod
+	def unified_to_gender_int(unified):
+		return unified / Classification.MODULO
+
+	@staticmethod
+	def unified_to_age_int(unified):
+		return unified % Classification.MODULO
+
 	def __init__(self, gender, age):
-		self.classification = self.GENDER_CATEGORIES[gender.lower()]*self.MODULO + self.AGE_CATEGORIES[age.lower()]
+		self.classification = self.gender_age_ints_to_unified(
+			self.GENDER_CATEGORIES[gender.lower()],
+			self.AGE_CATEGORIES[age.lower()])
 	
 	def to_int(self):
 		return self.classification
@@ -24,3 +40,4 @@ class Classification:
 	def from_int(value):
 		return Classification(Classification.GENDER_INVERSE[value / Classification.MODULO],
 			Classification.AGE_INVERSE[value % Classification.MODULO])
+

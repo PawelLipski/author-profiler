@@ -32,7 +32,7 @@ class BasicClassifier:
 
 	def perform_training(self, data_reader, suffix, category_expander):
 
-		print 'Creating train data file...'
+		print 'Creating train data file, suffix="' + suffix + '"...'
 		train_data = open(self.get_model_file('train-data', suffix, 'dat'), 'w')
 		
 		for data, classification in data_reader:
@@ -69,7 +69,7 @@ class BasicClassifier:
 
 	def perform_prediction(self, data_reader, suffix):
 
-		print 'Creating prediction data file...'
+		print 'Creating prediction data file, suffix="' + suffix + '"...'
 		classification_data = open(self.get_model_file('classification-data', suffix, 'dat'), 'w')
 		
 		j = 1

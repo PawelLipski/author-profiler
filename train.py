@@ -4,6 +4,8 @@ import argparse
 parser = argparse.ArgumentParser(description='Creates model for author profiling using given corpus.')
 parser.add_argument('-i', metavar='corpus_dir', required=True, help='path to dir containing *.xml files')
 parser.add_argument('-o', metavar='model_dir', required=True, help='path to empty dir where model will be saved')
+parser.add_argument('--disjoint', action='store_true', help='if present, forces use of disjoint (gender/age) classifier;' +\
+	' otherwise, joint classifier is used')
 args = parser.parse_args()
 
 from helpers import Configuration
@@ -17,7 +19,7 @@ import pickle
 import sys
 import os.path
 
-classifier = JointClassifier()
+classifier = DisjointClassifier() if args.disjoint else JointClassifier()
 
 if os.path.isfile(Configuration.CorpusDirectory + '/truth.txt'):
 	reader = TrainDataReader(Configuration.CorpusDirectory + '/*.xml', Configuration.CorpusDirectory + '/truth.txt')

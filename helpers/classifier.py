@@ -50,7 +50,7 @@ class BasicClassifier:
 		print '   DONE!'
 		
 		print 'Scaling values...'
-		scaled_data = open('train-data-scaled.dat', 'w')
+		scaled_data = open(self.get_model_file('train-data-scaled', suffix, 'dat'), 'w')
 		subprocess.check_call(['svm-scale', '-l', '0', '-s', self.get_model_file('scale', suffix, 'params'), train_data.name],
 			stdout=scaled_data)
 		scaled_data.flush()
@@ -98,7 +98,7 @@ class BasicClassifier:
 		print '   DONE!'
 
 		print 'Predicting...'
-		result_file = open('result.dat', 'w+')
+		result_file = open(self.get_model_file('result', suffix, 'dat'), 'w+')
 		subprocess.check_call(['svm-predict', scaled_data.name, self.get_model_file('train-results', suffix, 'dat'), result_file.name])
 		print '   DONE!'
 

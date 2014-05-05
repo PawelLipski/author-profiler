@@ -106,14 +106,8 @@ class BasicClassifier:
 		return cls_numbers
 
 	def classify(self, data_reader):
+		raise 'Not implemented'
 
-		author_specs = self.strip_author_specs(data_reader)
-
-		cls_numbers = self.perform_prediction(data_reader, suffix = '')
-		clses = [Classification.from_int(cls_number) for cls_number in cls_numbers]
-
-		return zip(author_specs, clses)
-	
 
 class JointClassifier(BasicClassifier):
 
@@ -126,6 +120,15 @@ class JointClassifier(BasicClassifier):
 
 		category_identity = lambda x: x
 		self.perform_training(data_reader, suffix = '', category_expander = category_identity)
+
+	def classify(self, data_reader):
+
+		author_specs = self.strip_author_specs(data_reader)
+
+		cls_numbers = self.perform_prediction(data_reader, suffix = '')
+		clses = [Classification.from_int(cls_number) for cls_number in cls_numbers]
+
+		return zip(author_specs, clses)
 
 
 class DisjointClassifier(BasicClassifier):

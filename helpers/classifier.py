@@ -141,8 +141,21 @@ class DisjointClassifier(BasicClassifier):
 		self.create_corpora(data_reader)
 
 		category_gender = Classification.unified_to_gender_int
-		self.perform_training(data_reader, suffix = '-gender', category_expander = category_gender)
+		self.perform_training(data_reader, suffix = 'gender', category_expander = category_gender)
 
 		category_age = Classification.unified_to_age_int
-		self.perform_training(data_reader, suffix = '-age', category_expander = category_age)
+		self.perform_training(data_reader, suffix = 'age', category_expander = category_age)
+
+	def classify(self, data_reader):
+
+		author_specs = self.strip_author_specs(data_reader)
+
+		gender_cls_numbers = self.perform_prediction(data_reader, suffix = 'gender')
+		age_cls_numbers = self.perform_prediction(data_reader, suffix = 'age')
+
+		unify = Classification.gender_age_ints_to_unified
+		unified_cls_numbers = [ unify(gender, age) for gender, age in zip(gender_cls_numbers, age_cls_numbers) ]
+		clses = [Classification.from_int(cls_number) for cls_number in unified_cls_numbers]
+
+		return zip(author_specs, clses)
 

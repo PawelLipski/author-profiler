@@ -27,3 +27,14 @@ class LibsvmWrapper(LibraryWrapper):
 	def predict(self, input_name, train_results_name, results_name):
 		subprocess.check_call(['svm-predict', input_name, train_results_name, results_name])
 
+class LiblinearWrapper(LibraryWrapper):
+	
+	def scale(self, scale_params_name, input_name, scaled_name):
+		subprocess.check_call(['cp', input_name, scaled_name])
+
+	def train(self, input_name, results_name):
+		subprocess.check_call(['linear-train', input_name, results_name])
+
+	def predict(self, input_name, train_results_name, results_name):
+		subprocess.check_call(['linear-predict', input_name, train_results_name, results_name])
+

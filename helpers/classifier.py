@@ -6,15 +6,16 @@ import tempfile, subprocess, sys
 
 class BasicClassifier:
 
-	def __init__(self, corpus_symbols = None):
+	def __init__(self, library, corpus_symbols = None):
+		self.library = library
 		self.corpora_creator = CorporaCreator(corpus_symbols)
 		self.corpora = None
 	
 	def __getstate__(self):
-		return self.corpora
+		return self.corpora, self.library
 	
 	def __setstate__(self, state):
-		self.corpora = state
+		self.corpora, self.library = state
 	
 	def create_corpora(self, data_reader):
 
@@ -50,14 +51,16 @@ class BasicClassifier:
 		print '   DONE!'
 		
 		print 'Scaling values...'
-		scaled_data = open(self.get_model_file('train-data-scaled', suffix, 'dat'), 'w')
-		subprocess.check_call(['svm-scale', '-l', '0', '-s', self.get_model_file('scale', suffix, 'params'), train_data.name],
-			stdout=scaled_data)
-		scaled_data.flush()
+		scale_params_name = self.get_model_file('scale', suffix, 'params')
+		input_name = train_data.name
+		scaled_name = self.get_model_file('train-data-scaled', suffix, 'dat')
+		self.library.scale(scale_params_name, input_name, scaled_name)
 		print '   DONE!'
 		
 		print 'Training...'
-		result = subprocess.check_call(['svm-train', scaled_data.name, self.get_model_file('train-results', suffix, 'dat')])
+		input_name = scaled_name
+		results_name = self.get_model_file('train-results', suffix, 'dat')
+		self.library.train(input_name, results_name)
 		print '   DONE!'
 
 	def train(self, data_reader):
@@ -91,18 +94,20 @@ class BasicClassifier:
 		print '   DONE!'
 
 		print 'Scaling values...'
-		scaled_data = open(self.get_model_file('classification-data-scaled', suffix, 'dat'), 'w')
-		subprocess.check_call(['svm-scale', '-l', '0', '-r', self.get_model_file('scale', suffix, 'params'), classification_data.name],
-			stdout=scaled_data)
-		scaled_data.flush()
+		scale_params_name = self.get_model_file('scale', suffix, 'params')
+		input_name = classification_data.name
+		scaled_name = self.get_model_file('classification-data-scaled', suffix, 'dat')		
+		self.library.scale(scale_params_name, input_name, scaled_name)
 		print '   DONE!'
 
 		print 'Predicting...'
-		result_file = open(self.get_model_file('result', suffix, 'dat'), 'w+')
-		subprocess.check_call(['svm-predict', scaled_data.name, self.get_model_file('train-results', suffix, 'dat'), result_file.name])
+		input_name = scaled_name
+		train_results_name = self.get_model_file('train-results', suffix, 'dat')
+		results_name = self.get_model_file('result', suffix, 'dat')	
+		self.library.predict(input_name, train_results_name, results_name)
 		print '   DONE!'
 
-		cls_numbers = map(int, result_file.readlines())
+		cls_numbers = map(int, open(results_name).readlines())
 		return cls_numbers
 
 	def classify(self, data_reader):
@@ -111,8 +116,8 @@ class BasicClassifier:
 
 class JointClassifier(BasicClassifier):
 
-	def __init__(self, corpus_symbols = None):
-		BasicClassifier.__init__(self, corpus_symbols)
+	def __init__(self, library, corpus_symbols = None):
+		BasicClassifier.__init__(self, library, corpus_symbols)
 
 	def train(self, data_reader):
 
@@ -133,8 +138,8 @@ class JointClassifier(BasicClassifier):
 
 class DisjointClassifier(BasicClassifier):
 
-	def __init__(self, corpus_symbols = None):
-		BasicClassifier.__init__(self, corpus_symbols)
+	def __init__(self, library, corpus_symbols = None):
+		BasicClassifier.__init__(self, library, corpus_symbols)
 
 	def train(self, data_reader):
 

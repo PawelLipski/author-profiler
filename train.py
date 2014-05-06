@@ -14,12 +14,14 @@ Configuration.ModelDirectory = args.o
 
 from helpers.reader import TrainDataReader
 from helpers.classifier import *
+from helpers.libraries import *
 
 import pickle
 import sys
 import os.path
 
-classifier = DisjointClassifier() if args.disjoint else JointClassifier()
+library = LibsvmWrapper()
+classifier = DisjointClassifier(library) if args.disjoint else JointClassifier(library)
 
 if os.path.isfile(Configuration.CorpusDirectory + '/truth.txt'):
 	reader = TrainDataReader(Configuration.CorpusDirectory + '/*.xml', Configuration.CorpusDirectory + '/truth.txt')

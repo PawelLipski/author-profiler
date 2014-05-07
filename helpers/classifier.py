@@ -122,7 +122,7 @@ class BasicClassifier:
 				if cls_number == actual_cls_number:
 					equal += 1
 			percent_equal = float(equal) / total * 100
-			print 'Accuracy (checked at classify.py):', percent_equal, '% (', equal, '/', total, ')'
+			print 'Accuracy (checked at classify.py): %.2f%% (%d/%d)' % (percent_equal, equal, total)
 
 	def classify(self, data_reader, truth_file_name = None):
 		raise 'Not implemented'

@@ -1,6 +1,7 @@
 from corpora import CorporaCreator
 from helpers.classification import Classification
 from helpers import Configuration
+from helpers.reader import TruthParser
 
 import tempfile, subprocess, sys
 
@@ -110,13 +111,15 @@ class BasicClassifier:
 		cls_numbers = map(int, open(results_name).readlines())
 		return cls_numbers
 
-	def compare_to_truth_if_present(self, cls_numbers, truth_file_name):
+	def compare_to_truth_if_present(self, cls_numbers, truth_file_name, author_specs):
 		if truth_file_name:
 			truth = TruthParser.parse(truth_file_name)
 			total = len(truth)
 			equal = 0
-			for (predicted, actual) in zip(cls_numbers, truth):
-				if predicted == actual:
+			for (author_spec, cls_number) in zip(author_specs, cls_numbers):
+				author_id = author_spec[0]
+				actual_cls_number = truth[author_id].to_int()
+				if cls_number == actual_cls_number:
 					equal += 1
 			percent_equal = float(equal) / total * 100
 			print 'Accuracy (checked at classify.py):', percent_equal, '% (', equal, '/', total, ')'
@@ -142,7 +145,7 @@ class JointClassifier(BasicClassifier):
 		author_specs = self.strip_author_specs(data_reader)
 
 		cls_numbers = self.perform_prediction(data_reader, suffix = '')
-		self.compare_to_truth_if_present(cls_numbers, truth_file_name)
+		self.compare_to_truth_if_present(cls_numbers, truth_file_name, author_specs)
 
 		clses = [Classification.from_int(cls_number) for cls_number in cls_numbers]
 
@@ -174,7 +177,7 @@ class DisjointClassifier(BasicClassifier):
 		unify = Classification.gender_age_ints_to_unified
 		unified_cls_numbers = [ unify(gender, age) for gender, age in zip(gender_cls_numbers, age_cls_numbers) ]
 
-		self.compare_to_truth_if_present(unified_cls_numbers, truth_file_name)
+		self.compare_to_truth_if_present(unified_cls_numbers, truth_file_name, author_specs)
 		clses = [Classification.from_int(cls_number) for cls_number in unified_cls_numbers]
 
 		return zip(author_specs, clses)

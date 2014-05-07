@@ -6,6 +6,7 @@ parser = argparse.ArgumentParser(description='Creates model for author profiling
 parser.add_argument('-i', metavar='corpus_dir', required=True, help='path to dir containing *.xml files')
 parser.add_argument('-m', metavar='model_dir', required=True, help='path to dir containg model files')
 parser.add_argument('-o', metavar='output_dir', required=True, help='path to dir where results will be saved')
+parser.add_argument('--truth', metavar='truth_file', help='path to the truth file')
 args = parser.parse_args()
 
 from helpers import Configuration
@@ -24,7 +25,7 @@ classifier = pickle.load(file)
 file.close()
 
 reader = ClassifyDataReader(Configuration.CorpusDirectory + '/*.xml')
-predictions = classifier.classify(reader)
+predictions = classifier.classify(reader, args.truth)
 
 for authorspec, cls in predictions:
 	PredictionWriter.output_prediction(Configuration.OutputDirectory, authorspec, cls)

@@ -6,6 +6,22 @@ import xml.dom.minidom as dom
 from textprocess.tags import TagsStripperProcessor
 from helpers.classification import Classification
 
+class TruthParser:
+	
+	@staticmethod
+	def parse(truth_file_name):
+		truthdata = dict()
+		
+		# Read "truth.txt" and get data
+		with open(truth_file_name) as truthfile:
+			for line in truthfile:
+				line = line.strip().split(':::')
+				if len(line) < 3:
+					raise Exception('Invalid line in truth file: ' + (':::'.join(line)))
+				truthdata[line[0]] = Classification(line[1], line[2])
+
+		return truthdata
+
 class TrainDataReader:
 	def __init__(self, directory, truth = None):
 		self.path = directory

@@ -111,7 +111,7 @@ class BasicClassifier:
 		cls_numbers = map(int, open(results_name).readlines())
 		return cls_numbers
 
-	def compare_to_truth_if_present(self, cls_numbers, truth_file_name, author_specs):
+	def compare_to_truth_if_present(self, cls_numbers, truth_file_name, author_specs, accuracy_file_name):
 		if truth_file_name:
 			truth = TruthParser.parse(truth_file_name)
 			total = len(truth)
@@ -122,9 +122,15 @@ class BasicClassifier:
 				if cls_number == actual_cls_number:
 					equal += 1
 			percent_equal = float(equal) / total * 100
-			print 'Accuracy (checked at classify.py): %.2f%% (%d/%d)' % (percent_equal, equal, total)
 
-	def classify(self, data_reader, truth_file_name = None):
+			out = 'Accuracy (checked at classify.py): %.2f%% (%d/%d)\n' % (percent_equal, equal, total)
+			if accuracy_file_name:
+				f = open(accuracy_file_name, 'w')
+				f.write(out)
+				f.close()
+			print out
+
+	def classify(self, data_reader, truth_file_name = None, accuracy_file_name = None):
 		raise 'Not implemented'
 
 
@@ -140,12 +146,12 @@ class JointClassifier(BasicClassifier):
 		category_identity = lambda x: x
 		self.perform_training(data_reader, suffix = '', category_expander = category_identity)
 
-	def classify(self, data_reader, truth_file_name = None):
+	def classify(self, data_reader, truth_file_name = None, accuracy_file_name = None):
 
 		author_specs = self.strip_author_specs(data_reader)
 
 		cls_numbers = self.perform_prediction(data_reader, suffix = '')
-		self.compare_to_truth_if_present(cls_numbers, truth_file_name, author_specs)
+		self.compare_to_truth_if_present(cls_numbers, truth_file_name, author_specs, accuracy_file_name)
 
 		clses = [Classification.from_int(cls_number) for cls_number in cls_numbers]
 
@@ -167,7 +173,7 @@ class DisjointClassifier(BasicClassifier):
 		category_age = Classification.unified_to_age_int
 		self.perform_training(data_reader, suffix = 'age', category_expander = category_age)
 
-	def classify(self, data_reader, truth_file_name = None):
+	def classify(self, data_reader, truth_file_name = None, accuracy_file_name = None):
 
 		author_specs = self.strip_author_specs(data_reader)
 
@@ -177,7 +183,7 @@ class DisjointClassifier(BasicClassifier):
 		unify = Classification.gender_age_ints_to_unified
 		unified_cls_numbers = [ unify(gender, age) for gender, age in zip(gender_cls_numbers, age_cls_numbers) ]
 
-		self.compare_to_truth_if_present(unified_cls_numbers, truth_file_name, author_specs)
+		self.compare_to_truth_if_present(unified_cls_numbers, truth_file_name, author_specs, accuracy_file_name)
 		clses = [Classification.from_int(cls_number) for cls_number in unified_cls_numbers]
 
 		return zip(author_specs, clses)

@@ -25,7 +25,7 @@ class LibsvmWrapper(LibraryWrapper):
 		subprocess.check_call(['svm-train', input_name, results_name])
 
 	def predict(self, input_name, train_results_name, results_name):
-		subprocess.check_call(['svm-predict', input_name, train_results_name, results_name])
+		subprocess.check_call(['svm-predict', '-q', input_name, train_results_name, results_name])
 
 class LiblinearWrapper(LibraryWrapper):
 	
@@ -36,5 +36,5 @@ class LiblinearWrapper(LibraryWrapper):
 		subprocess.check_call(['linear-train', input_name, results_name])
 
 	def predict(self, input_name, train_results_name, results_name):
-		subprocess.check_call(['linear-predict', input_name, train_results_name, results_name])
+		subprocess.check_call(['linear-predict', '-q', input_name, train_results_name, results_name])
 

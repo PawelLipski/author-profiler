@@ -5,7 +5,7 @@ class Classification:
 	MODULO = 5
 	
 	GENDER_CATEGORIES = { 'male': 0, 'female': 1 }
-	AGE_CATEGORIES = { '18-24':0, '25-34':1, '35-49':2, '50-64':3, '65-xx':4 }
+	AGE_CATEGORIES = { '18-24':0, '25-34':1, '35-49':2, '50-64':3, '65-plus':4, '65-xx':4 }
 	
 	GENDER_INVERSE = dict((v,k) for k, v in GENDER_CATEGORIES.items())
 	AGE_INVERSE = dict((v,k) for k, v in AGE_CATEGORIES.items())

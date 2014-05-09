@@ -15,5 +15,5 @@ for opts in '' '--disjoint' '--libsvm' '--libsvm --disjoint'; do
 done
 
 echo "Majority class: " >> $log
-cat ../corpora/pan14-author-profiling-test-$1/truth.dat | cut -f 4,7 -d: | sort | uniq -c | sort -n -r | head -1 >> $log
+./scripts/get-majority.sh ../corpora/pan14-author-profiling-test-$1/truth.dat >> $log
 

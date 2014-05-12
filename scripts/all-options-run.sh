@@ -3,7 +3,8 @@ log="../performance-measures/results-$1.txt"
 date >> $log
 echo >> $log
 
-for opts in '' '--disjoint' '--libsvm' '--libsvm --disjoint'; do
+#for opts in '' '--disjoint' '--libsvm' '--libsvm --disjoint'; do
+for opts in ''; do
 	cmd="./scripts/quick-run.sh $1 $opts"
 	echo $cmd
 	echo $cmd >> $log

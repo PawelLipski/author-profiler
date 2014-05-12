@@ -89,6 +89,8 @@ Niestandardowa (i nieobowiązkowa) opcja \texttt{--accuracy accuracy\_output\_fi
 
 Wszystkie testy były uruchamiane na Ubuntu 12.04 wirtualizowanym w VMware Player na Windows 7, na procesorze i7 przy włączonym VT-X. \\
 
+We wszystkich testach użyto metryk CW, CNG, FW oraz POS. \\
+
 \begin{description}
 
 \item[Styl] rodzaj danych (fragment korpusu treningowego PAN14), na jakich uruchamiane były testy \\
@@ -113,6 +115,7 @@ Wszystkie testy były uruchamiane na Ubuntu 12.04 wirtualizowanym w VMware Playe
 
 \textbf{Styl} & \textbf{$N_{total}$} & \textbf{$N_{train}, N_{test}$} & $N_{maj}$ & \textbf{Konfiguracja} & \textbf{Dokładność} & \textbf{Czas} \\  \hline
 
+
 \multirow{4}{*}{Blog} & \multirow{4}{*}{147}	& \multirow{4}{*}{75} & \multirow{4}{*}{17} & 
 linear, joint & 28.00\% (21/75) & 1677 sec \\  \cline{5-7}
 & & & & 
@@ -121,6 +124,7 @@ linear, disjoint & 26.67\% (20/75) & 2833 sec \\  \cline{5-7}
 svm, joint & 16.00\% (12/75) & 1695 sec \\  \cline{5-7}
 & & & & 
 svm, disjoint & 16.00\% (12/75) & 2711 sec \\  \hline
+
 
 \multirow{12}{*}{Reviews} & \multirow{12}{*}{4470} & \multirow{4}{*}{200} & \multirow{4}{*}{39} & 
 linear, joint & 16.00\% (32/200) & 316 sec \\  \cline{5-7}
@@ -149,29 +153,55 @@ svm, joint & \textit{(skipped)} & N/A \\  \cline{5-7}
 & & & & 
 svm, disjoint & \textit{(skipped)} & N/A \\  \hline
 
-\multirow{4}{*}{Social media} & \multirow{4}{*}{7746} & \multirow{4}{*}{150} & \multirow{4}{*}{39} & 
+
+\multirow{12}{*}{Social media} & \multirow{12}{*}{7746} & \multirow{4}{*}{150} & \multirow{4}{*}{39} & 
 linear, joint & 58.67\% (88/150) & 1536  sec \\  \cline{5-7}
 & & & & 
 linear, disjoint & 56.00\% (84/150) & 2622 sec \\  \cline{5-7}
 & & & & 
 svm, joint & 26.00\% (39/150) & 3257 sec \\  \cline{5-7}
 & & & & 
-svm, disjoint & 25.33\% (38/150) & 5646 sec \\  \hline
+svm, disjoint & 25.33\% (38/150) & 5646 sec \\  \cline{3-7}
+
+& & \multirow{4}{*}{500} & \multirow{4}{*}{108} & 
+linear, joint & 63.60\% (318/500) & 7489 sec \\  \cline{5-7}
+& & & & 
+linear, disjoint & \textit{(skipped)} & N/A \\  \cline{5-7}
+& & & & 
+svm, joint & \textit{(skipped)} & N/A \\  \cline{5-7}
+& & & & 
+svm, disjoint & \textit{(skipped)} & N/A \\  \cline{3-7}
+
+& & \multirow{4}{*}{900} & \multirow{4}{*}{261} & 
+linear, joint & 58.44\% (526/900) & 20321 sec \\  \cline{5-7}
+& & & & 
+linear, disjoint & \textit{(skipped)} & N/A \\  \cline{5-7}
+& & & & 
+svm, joint & \textit{(skipped)} & N/A \\  \cline{5-7}
+& & & & 
+svm, disjoint & \textit{(skipped)} & N/A \\  \hline
 
 
 \end{tabular}
 
 \end{adjustwidth}
 
+
+
 \section{Wnioski}
 
 Użycie LIBLINEAR przynosiło zdecydowanie lepsze rezulataty niż użycie LIBSVM. Ta druga w niektórych przypadkach zwracała dla wszystkich klasyfikowanych obiektów klasę większościową, a w jeszcze innych jej dokładność była nawet mniejsza niż naiwnej klasyfikacji wg klasy większościowej.
 
-Nie miało większego znaczenia dla dokładności, czy trenowanie i klasyfikacja były przeprowadzane dla klas będących kombinacją płci i wieku, czy oddzielnie dla płci i wieku. W tym drugim przypadku jednak znacznie więcej czasu pochłaniały obliczenia, które przeprowadzać trzeba było dla obu wielkości oddzielnie.
+Nie miało większego znaczenia dla dokładności, czy trenowanie i klasyfikacja były przeprowadzane dla klas będących kombinacją płci i wieku, czy oddzielnie dla płci i wieku. W tym drugim przypadku jednak znacznie więcej czasu pochłaniały obliczenia, które przeprowadzać trzeba było dla obu kategorii oddzielnie.
 
 Zdecydowanie największą część czasu zajmowały obliczenia (tagowanie części mowy) wykonywane przez NTLK.
 
-\textbf{TODO - coś o tym, co się udało}
+Najlepsze rezultaty udało się osiągnąć dla fragmentu socialmedia --- nawet już na stosunkowo niewielkiej części tego fragmentu ($N_{train} = N_{test} =150$ spośród 300 najmniejszych plików) wynosiła ona blisko 60\%. Jednocześnie dalszy wzrost rozmiaru wydzielonych korpusów treningowych i testowych w ogóle nie przyniósł wzrostu dokładności, a nawet spowodował jej spadek --- stąd też zaniechaliśmy prób na większej liczbie plików.
+
+Jednocześnie, nawet na znacznie większych korpusach ($N_{train} = N_{test} = 2000$) wydzielonych z fragmentu reviews dokładność nie przekroczyła 40\%. 
+
+We fragmencie blog dostarczone były pliki dla zaledwie 147 autorów, stąd też ciężko było sprawdzić dokładność dla większej liczby danych testowych i treningowych.
+
 
 \section{Wykresy}
 

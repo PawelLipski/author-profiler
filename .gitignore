@@ -13,6 +13,17 @@ svm-predict
 # vim swap files
 *.swp
 
+# TeX, snapshot, and latexmk generated files
+*.aux
+*.dep
+*.fdb_latexmk
+*.log
+*.out
+*.synctex.gz
+*.synctex.gz(busy)
+*.log
+*.fls
+
 # PyCharm files
 .idea/
 

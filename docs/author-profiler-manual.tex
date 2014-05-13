@@ -81,15 +81,19 @@ Niestandardowa opcja \texttt{--libsvm} wykorzystuje bibliotekę LIBSVM (zamiast 
 \texttt{classify.py [-h] -i corpus\_dir -m model\_dir -o output\_dir  [--truth truth\_file] [--accuracy accuracy\_output\_file]}
 
 Zakłada się, że \texttt{corpus\_dir} jest katalogiem, w którym znajdują się pliki XML zgodne z formatem przewidzianym dla PAN 2014. Uprzednio utworzone przez classify.py pliki w \texttt{output\_dir} zostaną nadpisane. \\
-Niestandardowa (i nieobowiązkowa) opcja \texttt{--truth truth\_file} wskazuje plik zawierający faktyczne wyniki klasyfikacji - przyjmujemy format zgodny z tym używany w plikach PAN2013. Taki plik można też wygenerować za pomocą skryptu scripts/make-truth.sh, podając w parametrze katalog - wynik zostanie zapisany do pliku truth.dat w tym katalogu.
+Niestandardowa (i nieobowiązkowa) opcja \texttt{--truth truth\_file} wskazuje plik zawierający faktyczne wyniki klasyfikacji - przyjmujemy format zgodny z tym używany w plikach PAN2013. Taki plik można też wygenerować za pomocą skryptu scripts/make-truth.sh, podając w parametrze katalog - wynik zostanie zapisany do pliku truth.dat w tym katalogu.\\
 Niestandardowa (i nieobowiązkowa) opcja \texttt{--accuracy accuracy\_output\_file} wskazuje plik, do którego zostanie zapisana linia z informacją o trafności klasyfikacji (używane w skryptach).
 
 
 \section{Wyniki}
 
+\subsection{Środowisko}
+
 Wszystkie testy były uruchamiane na Ubuntu 12.04 wirtualizowanym w VMware Player na Windows 7, na procesorze i7 przy włączonym VT-X. \\
 
 We wszystkich testach użyto metryk CW, CNG, FW oraz POS. \\
+
+\subsection{Legenda}
 
 \begin{description}
 
@@ -106,8 +110,9 @@ We wszystkich testach użyto metryk CW, CNG, FW oraz POS. \\
 
 \end{description}
 
+\subsection{Rezultaty dla poszczególnych konfiguracji}
 
-\begin{adjustwidth}{-3.5cm}{-0cm}
+\begin{adjustwidth}{-4cm}{-0cm}
 
 \begin{tabular}{|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{3cm}|p{3cm}|p{3cm}|}
 
@@ -207,7 +212,7 @@ We fragmencie blog dostarczone były pliki dla zaledwie 147 autorów, stąd też
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=1.0]{logc_loggamma_acc}\label{fig:chart}
+\includegraphics[scale=0.8]{logc_loggamma_acc}\label{fig:chart}
 \caption{Wykres zależności dokładności od parametrów $C$ oraz $\gamma$}
 \end{figure}
 

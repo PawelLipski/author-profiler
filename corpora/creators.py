@@ -91,3 +91,22 @@ class FunctionWordsCorpusCreator(CorpusCreator):
 		function_words = [l.rstrip() for l in open(self.FUNCTION_WORDS_FILE).readlines()]
 		return ElementsFrequencyCorpus(function_words, WordSplitter())
 
+class SentenceLengthCorpusCreator(CorpusCreator):
+	def __init__(self):
+		pass
+	
+	def feed_data(self, data, classification):
+		pass
+	
+	def create_corpus(self):
+		return SentenceLengthCorpus()
+
+class SentenceWordsCorpusCreator(CorpusCreator):
+	def __init__(self):
+		pass
+	
+	def feed_data(self, data, classification):
+		pass
+	
+	def create_corpus(self):
+		return SentenceWordsCorpus()

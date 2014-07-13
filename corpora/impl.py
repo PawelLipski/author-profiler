@@ -74,4 +74,44 @@ class PartOfSpeechCorpus(Corpus):
 		
 		return unigram_features + bigram_features
 
+class SentenceLengthCorpus(Corpus):
+	def __init__(self):
+		pass
+	
+	def __getstate__(self):
+		pass
+	
+	def __setstate__(self, state):
+		pass
+	
+	def get_features_for_data(self, data):
+		sentences = [
+			len(i.strip())
+				for i in data.replace('!', '.').replace('?', '.').split('.')
+					if len(i.strip()) > 0
+		]
+		if len(sentences) == 0:
+			return [0]
+		else:
+			return [reduce(lambda x, y: x + y, sentences) / len(sentences)]
 
+class SentenceWordsCorpus(Corpus):
+	def __init__(self):
+		pass
+	
+	def __getstate__(self):
+		pass
+	
+	def __setstate__(self, state):
+		pass
+	
+	def get_features_for_data(self, data):
+		words = [
+			len([1 for j in i.strip().split(' ') if len(j) > 0])
+				for i in data.replace('!', '.').replace('?', '.').split('.')
+					if len(i.strip()) > 0
+		]
+		if len(words) == 0:
+			return [0]
+		else:
+			return [reduce(lambda x, y: x + y, words) / len(words)]

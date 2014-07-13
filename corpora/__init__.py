@@ -9,6 +9,8 @@ class CorporaCreator(CorpusCreator):
 		'POS': PartOfSpeechCorpusCreator,
 		'CNG': HighestInfogainTrigramsCorpusCreator,
 		 'CW': HighestInfogainWordsCorpusCreator,
+		'LEN': SentenceLengthCorpusCreator,
+		'WRD': SentenceWordsCorpusCreator,
 	}
 	
 	def __init__(self, corpus_symbols = None):

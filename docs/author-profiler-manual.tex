@@ -48,7 +48,7 @@ Po rozpakowaniu wystarczy wydać polecenie make. Powstały plik wykonywalne trai
 
 Domyślnie aplikacja wykorzystuje LIBLINEAR. Użycie LIBSVM do obliczeń można wymusić poprzez przekazanie opcji \texttt{--libsvm} do polecenia train.py.
 
-Bibliotekę można pobrać z \href{http://www.csie.ntu.edu.tw/~cjlin/libsvm/}{http://www.csie.ntu.edu.tw/$\sim$cjlin/libsvm/} (sekcja Download LIBSVM).
+Bibliotekę można pobrać z \href{http://www.csie.ntu.edu.tw/~cjlin/libsvm/}{http://www.csie.ntu.edu.tw/~cjlin/libsvm/} (sekcja Download LIBSVM).
 
 Po rozpakowaniu wystarczy wydać polecenie make, a następnie umieścić trzy pliki wykonywalne (svm-train, svm-scale oraz svm-predict) np. w /usr/local/bin (tak, aby były one dostępne przez PATH).
 
@@ -59,6 +59,10 @@ Zgodnie z \href{http://www.nltk.org/install.html}{http://www.nltk.org/install.ht
 
 \texttt{sudo pip install -U numpy \\
 sudo pip install -U pyyaml nltk}
+
+Na Ubuntu potrzebne pakiety można wcześniej ściągnąć poleceniem:
+
+\texttt{sudo apt-get install python-pip python-dev}
 
 Następnie należy ściągnąć dane NTLK (dokładniej Part Of Speech Tagger). Po wejściu w interaktywną powłokę Pythona należy wpisać:
 
